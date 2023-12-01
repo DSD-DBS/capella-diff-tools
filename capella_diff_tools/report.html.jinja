@@ -1,0 +1,193 @@
+{#-
+  Copyright DB Netz AG and contributors
+  SPDX-License-Identifier: Apache-2.0
+  -#}
+<html>
+    <head>
+        <style>
+            body {
+                font-family: sans-serif;
+                font-size: 12pt;
+                color: #333;
+                margin: 1em;
+            }
+            h1 {
+                font-size: 24pt;
+            }
+            h2 {
+                font-size: 20pt;
+            }
+            h3 {
+                font-size: 16pt;
+            }
+            .created-modified-delited {
+                margin-left: 1em;
+            }
+            .section {
+                margin-left: 1em;
+                padding-left: 1em;
+                border-left: 1px solid #ccc;
+            }
+            .deleted, del {
+                color: red;
+            }
+            .created, ins {
+                color: #00aa00;
+            }
+            /* nice table style with borders, bold th*/
+            table {
+                border-collapse: collapse;
+                border: 1px solid #ccc;
+            }
+            table tbody th {
+                font-weight: bold;
+                border: 1px solid #ccc;
+                padding: 0.25em;
+                text-align: right;
+            }
+            table td {
+                border: 1px solid #ccc;
+                padding: 0.25em;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Model Change Assessment Report</h1>
+        <p>This report provides an analysis of changes to the following model repository:</p>
+        <p>
+            <b>Repository: </b>{{ data["metadata"]["model"]["path"] }} <br/>
+            <b>Entry point: </b>{{ data["metadata"]["model"]["entrypoint"] }}
+        </p>
+        <p>The review of changes covers the following commits:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Previous</th>
+                    <th>Current</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Author</th>
+                    <td>{{ data["metadata"]["old_revision"]["author"] }}</td>
+                    <td>{{ data["metadata"]["new_revision"]["author"] }}</td>
+                </tr>
+                <tr>
+                    <th>Revision</th>
+                    <td>{{ data["metadata"]["old_revision"]["revision"] }}</td>
+                    <td>{{ data["metadata"]["new_revision"]["revision"] }}</td>
+                </tr>
+                <tr>
+                    <th>Date & time of commit</th>
+                    <td>{{ data["metadata"]["old_revision"]["date"] }}</td>
+                    <td>{{ data["metadata"]["new_revision"]["date"] }}</td>
+                </tr>
+                <tr>
+                    <th>Commit message</th>
+                    <td>{{ data["metadata"]["old_revision"]["description"] }}</td>
+                    <td>{{ data["metadata"]["new_revision"]["description"] }}</td>
+                </tr>
+                <tr>
+                    <th>Commit ID (hash)</th>
+                    <td>{{ data["metadata"]["old_revision"]["hash"] }}</td>
+                    <td>{{ data["metadata"]["new_revision"]["hash"] }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+{% macro pretty_stats(stats) %}
+<span style="font-weight: normal;">(
+    {% if stats.created %}<span style="color:green">+{{stats["created"]}}</span> / {% endif %}
+    {% if stats.deleted %}<span style="color:red">-{{stats["deleted"]}}</span> / {% endif %}
+    {% if stats.modified %}<span style="color:blue">Δ{{stats["modified"]}}</span>{% endif %}
+)</span>
+{% endmacro %}
+
+
+{% macro display_basic_changes(key, objects, color) %}
+    {% if key in objects %}
+        <h4 style="color: {{color}}">{{key | upper}} ({{ objects[key] | length }})</h4>
+        <div class="section">
+            <ul>
+                {% for obj in objects[key] %}
+                <li>{{obj["display_name"]}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endmacro %}
+
+
+{% macro spell_changes_out(changes) %}
+    <div class="created-modified-delited">
+    {{ display_basic_changes("created", changes, "#009900") }}
+    {% if "modified" in changes %}
+        <h4 style="color: blue">MODIFIED ({{ changes["modified"] | length }})</h4>
+        <div class="section">
+            {% for obj in changes["modified"] %}
+            <p><b>{{ obj["display_name"] }}</b></p>
+            <div class="section">
+            <ul>
+                {% for change in obj["attributes"] %}
+                <li><b>{{ change }}</b>:
+                    {% if "diff" in obj["attributes"][change] %}
+                        {{ obj["attributes"][change]["diff"] }}
+                    {% else %}
+                        {{ obj["attributes"][change]["previous"] }} -> {{ obj["attributes"][change]["current"] }}
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+                {{ display_basic_changes("introduced", obj, "#009900") }}
+                {{ display_basic_changes("removed", obj, "red") }}
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {{ display_basic_changes("deleted", changes, "red") }}
+    </div>
+{% endmacro %}
+
+        <h1>Object Changes {{ pretty_stats(data["objects"].stats) }}</h1>
+        <div class="section">
+        {% set LAYER = {"oa": "Operational Analysis", "sa": "System Analysis", "la": "Logical Architecture", "pa": "Physical Architecture"}%}
+        {% for layer in ["oa", "sa", "la", "pa"] %}
+            {% set layer_data = data["objects"][layer] %}
+            {% if layer_data and layer_data.stats %}
+                <h2>{{LAYER[layer]}} {{ pretty_stats(layer_data.stats) }}</h2>
+
+
+            <div class="section">
+            {% for obj_type in data["objects"][layer] if obj_type != "stats" %}
+                {% set obj_type_items = data["objects"][layer][obj_type] %}
+                {% if obj_type_items.stats %}
+                <h3>{{obj_type}} {{pretty_stats(obj_type_items.stats)}}</h3>
+                {{ spell_changes_out(obj_type_items) }}
+                {% endif %}
+            {% endfor %}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+
+        <h1>Diagram changes</h1>
+        <div class="section">
+            <!-- we iterate through non-empty layers first -->
+            {% for layer in ["oa", "sa", "la", "pa"] %}
+            {% set layer_data = data["diagrams"][layer] %}
+            {% if layer_data and layer_data.stats %}
+                <h2>{{LAYER[layer]}} {{ pretty_stats(layer_data.stats) }}</h2>
+                <div class="section">
+                {% for diag_type, diags in data.diagrams[layer].items() %}
+                    {% if diags.stats %}
+                        <h3>{{diag_type}} {{pretty_stats(diags.stats)}}</h3>
+                        {{ spell_changes_out(diags) }}
+                    {% endif %}
+                {% endfor %}
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </body>
+</html>
