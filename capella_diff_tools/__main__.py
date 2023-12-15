@@ -5,14 +5,16 @@ from __future__ import annotations
 
 import datetime
 import logging
+import pathlib
 import sys
 import typing as t
 
 import capellambse
+import capellambse.filehandler.git
 import click
 import markupsafe
 import yaml
-from capellambse.filehandler import git as gitfh
+from capellambse import filehandler as fh
 from capellambse.model import common as c
 
 import capella_diff_tools
@@ -62,6 +64,7 @@ def main(
     logging.basicConfig(level="DEBUG")
     if "revision" in model:
         del model["revision"]
+    model["path"] = _ensure_git(model["path"])
     old_model = capellambse.MelodyModel(**model, revision=old_version)
     new_model = capellambse.MelodyModel(**model, revision=new_version)
 
@@ -88,15 +91,29 @@ def main(
         report_file.write(report.generate_html(result))
 
 
+def _ensure_git(path: str | pathlib.Path) -> str:
+    proto, path = fh.split_protocol(path)
+    if proto == "file":
+        assert isinstance(path, pathlib.Path)
+        path = "git+" + path.resolve().as_uri()
+
+    proto, _ = fh.split_protocol(path)
+    if proto != "git":
+        raise click.Abort("The 'model' must point to a git repository")
+
+    assert isinstance(path, str)
+    return path
+
+
 def _get_revision_info(
     model: capellambse.MelodyModel,
     revision: str,
 ) -> types.RevisionInfo:
     """Return the revision info of the given model."""
     info = model.info
-    fh = model._loader.resources["\x00"]
-    assert isinstance(fh, gitfh.GitFileHandler)
-    author, date_str, description = fh._git(
+    res = model._loader.resources["\x00"]
+    assert isinstance(res, fh.git.GitFileHandler)
+    author, date_str, description = res._git(
         "log",
         "-1",
         "--format=%aN%x00%aI%x00%B",
