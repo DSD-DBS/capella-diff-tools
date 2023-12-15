@@ -207,3 +207,4 @@ include = ["capella_diff_tools", "capella_diff_tools.*"]
 
 [tool.setuptools_scm]
 # This section must exist for setuptools_scm to work
+local_scheme = "no-local-version"
