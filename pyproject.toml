@@ -1,4 +1,4 @@
-# Copyright DB Netz AG and contributors
+# Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
 [build-system]
@@ -14,7 +14,7 @@ readme = "README.md"
 requires-python = ">=3.11, <3.13"
 license = { text = "Apache-2.0" }
 authors = [
-  { name = "DB Netz AG" },
+  { name = "DB InfraGO AG" },
 ]
 keywords = []
 classifiers = [
@@ -82,6 +82,8 @@ line_length = 79
 
 [tool.mypy]
 check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
 no_implicit_optional = true
 show_error_codes = true
 warn_redundant_casts = true
@@ -90,13 +92,13 @@ python_version = "3.11"
 
 [[tool.mypy.overrides]]
 module = ["tests.*"]
-allow_incomplete_defs = true
-allow_untyped_defs = true
+disallow_incomplete_defs = false
+disallow_untyped_defs = false
 
 [[tool.mypy.overrides]]
 # Untyped third party libraries
 module = [
-  # ...
+  "diff_match_patch.*",
 ]
 ignore_missing_imports = true
 
@@ -121,6 +123,10 @@ add-ignore = [
 ignore-long-lines = '^\s*(?:(?:__ |\.\. __: )?https?://[^ ]+$|def test_.*|[A-Za-z0-9_\.]+(?: ?:)?$)'
 
 [tool.pylint.master]
+load-plugins = [
+  "pylint.extensions.mccabe",
+]
+max-complexity = 14
 max-line-length = 79
 
 [tool.pylint.messages_control]
@@ -128,14 +134,9 @@ disable = [
   "broad-except",
   "global-statement",
   "import-outside-toplevel",
-  "invalid-name",
   "missing-class-docstring",
   "missing-function-docstring",
   "missing-module-docstring",
-  "no-else-break",
-  "no-else-continue",
-  "no-else-raise",
-  "no-else-return",
   "protected-access",
   "redefined-builtin",
   "too-few-public-methods",

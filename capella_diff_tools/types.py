@@ -1,4 +1,4 @@
-# Copyright DB Netz AG and contributors
+# Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 """Types for annotating functions in the diff tool."""
 from __future__ import annotations
@@ -20,6 +20,7 @@ class Metadata(te.TypedDict):
     """The 'modelinfo' used to load the models, sans the revision key."""
     new_revision: RevisionInfo
     old_revision: RevisionInfo
+    commit_log: list[RevisionInfo]
 
 
 class RevisionInfo(te.TypedDict, total=False):

@@ -1,4 +1,4 @@
-# Copyright DB Netz AG and contributors
+# Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 """Main entry point into capella_diff_tools."""
 from __future__ import annotations
@@ -64,7 +64,7 @@ def main(
     logging.basicConfig(level="DEBUG")
     if "revision" in model:
         del model["revision"]
-    model["path"] = _ensure_git(model["path"])
+    _ensure_git(model)
     old_model = capellambse.MelodyModel(**model, revision=old_version)
     new_model = capellambse.MelodyModel(**model, revision=new_version)
 
@@ -72,6 +72,7 @@ def main(
         "model": model,
         "old_revision": _get_revision_info(old_model, old_version),
         "new_revision": _get_revision_info(new_model, new_version),
+        "commit_log": _get_commit_log(new_model, old_version, new_version),
     }
     objects = compare.compare_all_objects(old_model, new_model)
     diagrams = compare.compare_all_diagrams(old_model, new_model)
@@ -91,18 +92,19 @@ def main(
         report_file.write(report.generate_html(result))
 
 
-def _ensure_git(path: str | pathlib.Path) -> str:
-    proto, path = fh.split_protocol(path)
+def _ensure_git(model: dict[str, t.Any]) -> None:
+    proto, path = fh.split_protocol(model["path"])
     if proto == "file":
         assert isinstance(path, pathlib.Path)
-        path = "git+" + path.resolve().as_uri()
-
-    proto, _ = fh.split_protocol(path)
-    if proto != "git":
+        path = path.resolve()
+        if "entrypoint" not in model and path.is_file():
+            model["entrypoint"] = path.name
+            path = path.parent
+        model["path"] = "git+" + path.as_uri()
+    elif proto != "git":
         raise click.Abort("The 'model' must point to a git repository")
 
-    assert isinstance(path, str)
-    return path
+    assert isinstance(model["path"], str)
 
 
 def _get_revision_info(
@@ -130,10 +132,40 @@ def _get_revision_info(
     }
 
 
+def _get_commit_log(
+    model: capellambse.MelodyModel,
+    old_version: str,
+    new_version: str,
+) -> list[types.RevisionInfo]:
+    res = model._loader.resources["\x00"]
+    assert isinstance(res, fh.git.GitFileHandler)
+    commits: list[types.RevisionInfo] = []
+    rawlog = res._git(
+        "log",
+        "-z",
+        "--reverse",
+        "--format=format:%H%x00%aN%x00%aI%x00%B",
+        f"{old_version}..{new_version}",
+        encoding="utf-8",
+    ).split("\x00")
+    log = capellambse.helpers.ntuples(4, rawlog)
+    for hash, author, date_str, description in log:
+        commits.append(
+            {
+                "hash": hash,
+                "revision": hash,
+                "author": author,
+                "date": datetime.datetime.fromisoformat(date_str),
+                "description": description.rstrip(),
+            }
+        )
+    return commits
+
+
 class CustomYAMLDumper(yaml.SafeDumper):
     """A custom YAML dumper that can serialize markupsafe.Markup."""
 
-    def represent_markup(self, data):
+    def represent_markup(self, data: t.Any) -> t.Any:
         """Represent markupsafe.Markup with the '!html' tag."""
         return self.represent_scalar("!html", str(data))
 
