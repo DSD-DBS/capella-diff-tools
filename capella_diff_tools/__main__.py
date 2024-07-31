@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import datetime
 import logging
-import os
 import pathlib
 import sys
 import typing as t
@@ -66,7 +65,7 @@ def main(
     logging.basicConfig(level="DEBUG")
     if "revision" in model:
         del model["revision"]
-    model["path"] = _ensure_git(model["path"])
+    _ensure_git(model)
     old_model = capellambse.MelodyModel(**model, revision=old_version)
     new_model = capellambse.MelodyModel(**model, revision=new_version)
 
@@ -93,18 +92,19 @@ def main(
         report_file.write(report.generate_html(result))
 
 
-def _ensure_git(path: str | os.PathLike[str]) -> str:
-    proto, path = fh.split_protocol(path)
+def _ensure_git(model: dict[str, t.Any]) -> None:
+    proto, path = fh.split_protocol(model["path"])
     if proto == "file":
         assert isinstance(path, pathlib.Path)
-        path = "git+" + path.resolve().as_uri()
-
-    proto, _ = fh.split_protocol(path)
-    if proto != "git":
+        path = path.resolve()
+        if "entrypoint" not in model and path.is_file():
+            model["entrypoint"] = path.name
+            path = path.parent
+        model["path"] = "git+" + path.as_uri()
+    elif proto != "git":
         raise click.Abort("The 'model' must point to a git repository")
 
-    assert isinstance(path, str)
-    return path
+    assert isinstance(model["path"], str)
 
 
 def _get_revision_info(
