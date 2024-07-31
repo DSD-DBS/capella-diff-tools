@@ -1,5 +1,5 @@
 <!--
- ~ Copyright DB Netz AG and contributors
+ ~ Copyright DB InfraGO AG and contributors
  ~ SPDX-License-Identifier: Apache-2.0
  -->
 
@@ -39,8 +39,8 @@ We additionally recommend that you set up your editor / IDE as follows.
 - _If you use Visual Studio Code_: Consider using a platform which supports
   third-party language servers more easily, and continue with the next point.
 
-  Otherwise, set up the editor to run `black`, `pylint` and `mypy` when saving.
-  To enable automatic import sorting with `isort`, add the following to your
+  Otherwise, set up the editor to run `ruff` and `mypy` when saving. To enable
+  automatic import sorting with `isort`, add the following to your
   `settings.json`:
 
   ```json
@@ -54,14 +54,16 @@ We additionally recommend that you set up your editor / IDE as follows.
   Note that the Pylance language server is not recommended, as it occasionally
   causes false-positive errors for perfectly valid code.
 
-- _If you do not use VSC_: Set up your editor to use the [python-lsp-server],
-  and make sure that the relevant plugins are installed. You can install
-  everything that's needed into the virtualenv with pip:
+- _If you do not use VSC_: Set up your editor to use the [python-lsp-server]
+  and [ruff], and make sure that the relevant pylsp plugins are installed.
 
   [python-lsp-server]: https://github.com/python-lsp/python-lsp-server
+  [ruff]: https://github.com/astral-sh/ruff
+
+  You can install everything that's needed into the virtualenv with pip:
 
   ```sh
-  pip install "python-lsp-server[pylint]" python-lsp-black pyls-isort pylsp-mypy
+  pip install "python-lsp-server" pyls-isort pylsp-mypy ruff
   ```
 
   This will provide as-you-type linting as well as automatic formatting on
@@ -80,7 +82,7 @@ The key differences are:
     https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 
   When writing docstrings for functions, use the imperative style, as per
-  [PEP-257]). For example, write "Do X and Y" instead of "Does X and Y".
+  [PEP-257]. For example, write "Do X and Y" instead of "Does X and Y".
 
   [pep-257]: https://peps.python.org/pep-0257/
 
@@ -90,20 +92,18 @@ The key differences are:
   automated tools pick up the full base class docstring instead, and is
   therefore more useful in IDEs etc.
 
-- **Linting**: Use [pylint] for static code analysis, and [mypy] for static
+- **Linting**: Use [ruff] for static code analysis, and [mypy] for static
   type checking.
 
-  [pylint]: https://github.com/PyCQA/pylint
   [mypy]: https://github.com/python/mypy
 
-- **Formatting**: Use [black] as code auto-formatter. The maximum line length
+- **Formatting**: Use [ruff] as code auto-formatter. The maximum line length
   is 79, as per [PEP-8]. This setting should be automatically picked up from
   the `pyproject.toml` file. The reason for the shorter line length is that it
   avoids wrapping and overflows in side-by-side split views (e.g. diffs) if
   there's also information displayed to the side of it (e.g. a tree view of the
   modified files).
 
-  [black]: https://github.com/psf/black
   [pep-8]: https://www.python.org/dev/peps/pep-0008/
 
   Be aware of the different line length of 72 for docstrings. We currently do
@@ -136,12 +136,7 @@ The key differences are:
 
   [pep-604-style unions]: https://www.python.org/dev/peps/pep-0604/
 
-- **Python style rules**: For conflicting parts, the [Black code style] wins.
-  If you have set up black correctly, you don't need to worry about this though
-  :)
-
-  [black code style]:
-    https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html
+- **Python style rules**: The auto-formatter wins.
 
 - When working with `dict`s, consider using `t.TypedDict` instead of a more
   generic `dict[str, float|int|str]`-like annotation where possible, as the

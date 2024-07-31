@@ -1,6 +1,7 @@
-# Copyright DB Netz AG and contributors
+# Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 """Main entry point into capella_diff_tools."""
+
 from __future__ import annotations
 
 import datetime
@@ -135,7 +136,7 @@ def _get_revision_info(
 class CustomYAMLDumper(yaml.SafeDumper):
     """A custom YAML dumper that can serialize markupsafe.Markup."""
 
-    def represent_markup(self, data):
+    def represent_markup(self, data: t.Any) -> t.Any:
         """Represent markupsafe.Markup with the '!html' tag."""
         return self.represent_scalar("!html", str(data))
 

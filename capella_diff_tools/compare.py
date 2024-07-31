@@ -1,6 +1,7 @@
-# Copyright DB Netz AG and contributors
+# Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 """Functions for comparing different types of objects in a Capella model."""
+
 from __future__ import annotations
 
 __all__ = [
@@ -221,7 +222,7 @@ def _obj2diff(
     for attr in dir(type(old)):
         if not isinstance(
             getattr(type(old), attr, None),
-            (m.BasePOD, m.AttrProxyAccessor, m.LinkAccessor),
+            m.BasePOD | m.AttrProxyAccessor | m.LinkAccessor,
         ):
             continue
 
@@ -290,9 +291,9 @@ def _obj2diff(
 def _serialize_obj(obj: t.Any) -> t.Any:
     if isinstance(obj, m.ModelElement):
         return {"uuid": obj.uuid, "display_name": _get_name(obj)}
-    elif isinstance(obj, m.ElementList):
+    if isinstance(obj, m.ElementList):
         return [{"uuid": i.uuid, "display_name": _get_name(i)} for i in obj]
-    elif isinstance(obj, (enum.Enum, enum.Flag)):
+    if isinstance(obj, enum.Enum | enum.Flag):
         return obj.name
     return obj
 
