@@ -58,7 +58,7 @@
             <b>Repository: </b>{{ data["metadata"]["model"]["path"] | e }} <br/>
             <b>Entry point: </b>{{ data["metadata"]["model"]["entrypoint"] | e }}
         </p>
-        <p>The review of changes covers the following commits:</p>
+        <p>The review of changes covers the following range of commits:</p>
         <table>
             <thead>
                 <tr>
@@ -84,9 +84,9 @@
                     <td>{{ data["metadata"]["new_revision"]["date"] | e }}</td>
                 </tr>
                 <tr>
-                    <th>Commit message</th>
-                    <td>{{ data["metadata"]["old_revision"]["description"] | e }}</td>
-                    <td>{{ data["metadata"]["new_revision"]["description"] | e }}</td>
+                    <th>Summary</th>
+                    <td>{{ data["metadata"]["old_revision"]["description"].split("\n") | first | e }}</td>
+                    <td>{{ data["metadata"]["new_revision"]["description"].split("\n") | first | e }}</td>
                 </tr>
                 <tr>
                     <th>Commit ID (hash)</th>
@@ -94,6 +94,48 @@
                     <td>{{ data["metadata"]["new_revision"]["hash"] | e }}</td>
                 </tr>
             </tbody>
+        </table>
+
+        <p>Detailed information about the contained commits:</p>
+
+        <table>
+            <tbody>
+                {% for commit in data.metadata.commit_log -%}
+                <tr>
+                    <td>{{ commit.hash | e }}</td>
+                    <td>{{ commit.date | e }}</td>
+                    <td>{{ commit.author | e }}</td>
+                    <td style="white-space: preserve">{{ commit.description | e }}</td>
+                </tr>
+                {% else -%}
+                <tr>
+                    <td>{{ data.metadata.old_revision.hash }}</td>
+                    <td>{{ data.metadata.old_revision.date }}</td>
+                    <td>{{ data.metadata.old_revision.author }}</td>
+                    <td style="white-space: preserve">{{ data.metadata.old_revision.description }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="font-style: italic; color: red">
+                        Error: The supplied report does not contain the commit log.
+                        Detailed information is only available for the first and last commit.
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{ data.metadata.new_revision.hash }}</td>
+                    <td>{{ data.metadata.new_revision.date }}</td>
+                    <td>{{ data.metadata.new_revision.author }}</td>
+                    <td style="white-space: preserve">{{ data.metadata.new_revision.description }}</td>
+                </tr>
+                {% endfor -%}
+            </tbody>
+            <thead>
+                <tr>
+                    <th>Commit ID (hash)</th>
+                    <th>Date &amp; time</th>
+                    <th>Author</th>
+                    <th>Commit message</th>
+                </tr>
+            </thead>
         </table>
 
 {% macro pretty_stats(stats) %}

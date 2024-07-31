@@ -73,6 +73,7 @@ def main(
         "model": model,
         "old_revision": _get_revision_info(old_model, old_version),
         "new_revision": _get_revision_info(new_model, new_version),
+        "commit_log": _get_commit_log(new_model, old_version, new_version),
     }
     objects = compare.compare_all_objects(old_model, new_model)
     diagrams = compare.compare_all_diagrams(old_model, new_model)
@@ -131,6 +132,36 @@ def _get_revision_info(
         "date": datetime.datetime.fromisoformat(date_str),
         "description": description.rstrip(),
     }
+
+
+def _get_commit_log(
+    model: capellambse.MelodyModel,
+    old_version: str,
+    new_version: str,
+) -> list[types.RevisionInfo]:
+    res = model._loader.resources["\x00"]
+    assert isinstance(res, fh.git.GitFileHandler)
+    commits: list[types.RevisionInfo] = []
+    rawlog = res._git(
+        "log",
+        "-z",
+        "--reverse",
+        "--format=format:%H%x00%aN%x00%aI%x00%B",
+        f"{old_version}..{new_version}",
+        encoding="utf-8",
+    ).split("\x00")
+    log = capellambse.helpers.ntuples(4, rawlog)
+    for hash, author, date_str, description in log:
+        commits.append(
+            {
+                "hash": hash,
+                "revision": hash,
+                "author": author,
+                "date": datetime.datetime.fromisoformat(date_str),
+                "description": description.rstrip(),
+            }
+        )
+    return commits
 
 
 class CustomYAMLDumper(yaml.SafeDumper):
