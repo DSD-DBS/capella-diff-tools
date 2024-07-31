@@ -1,11 +1,13 @@
-# Copyright DB Netz AG and contributors
+# Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: CC0-1.0
 
 name: Docs
 
 on:
+  pull_request:
   push:
-    branches: ["master"]
+    branches: [master]
+  workflow_dispatch:
 
 jobs:
   sphinx:
@@ -13,10 +15,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Upgrade pip
@@ -31,7 +33,15 @@ jobs:
       - name: Create docs
         run: |
           make -C docs html
+      - name: Upload built docs as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Documentation
+          path: docs/build/html
+          if-no-files-found: error
+          retention-days: 5
       - name: Deploy
+        if: github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3
         with:
           force_orphan: true

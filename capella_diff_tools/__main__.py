@@ -1,10 +1,11 @@
-# Copyright DB Netz AG and contributors
+# Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 """Main entry point into capella_diff_tools."""
 from __future__ import annotations
 
 import datetime
 import logging
+import os
 import pathlib
 import sys
 import typing as t
@@ -91,7 +92,7 @@ def main(
         report_file.write(report.generate_html(result))
 
 
-def _ensure_git(path: str | pathlib.Path) -> str:
+def _ensure_git(path: str | os.PathLike) -> str:
     proto, path = fh.split_protocol(path)
     if proto == "file":
         assert isinstance(path, pathlib.Path)
@@ -133,7 +134,7 @@ def _get_revision_info(
 class CustomYAMLDumper(yaml.SafeDumper):
     """A custom YAML dumper that can serialize markupsafe.Markup."""
 
-    def represent_markup(self, data):
+    def represent_markup(self, data: t.Any) -> t.Any:
         """Represent markupsafe.Markup with the '!html' tag."""
         return self.represent_scalar("!html", str(data))
 

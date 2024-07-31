@@ -1,4 +1,4 @@
-# Copyright DB Netz AG and contributors
+# Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 """Functions for comparing different types of objects in a Capella model."""
 from __future__ import annotations
@@ -209,6 +209,7 @@ def _obj2dict(obj: c.GenericElement) -> types.FullObject:
     }
 
 
+# pylint: disable-next=too-complex
 def _obj2diff(
     old: c.GenericElement, new: c.GenericElement
 ) -> types.ChangedObject | None:
@@ -293,9 +294,9 @@ def _obj2diff(
 def _serialize_obj(obj: t.Any) -> t.Any:
     if isinstance(obj, c.GenericElement):
         return {"uuid": obj.uuid, "display_name": _get_name(obj)}
-    elif isinstance(obj, c.ElementList):
+    if isinstance(obj, c.ElementList):
         return [{"uuid": i.uuid, "display_name": _get_name(i)} for i in obj]
-    elif isinstance(obj, (enum.Enum, enum.Flag)):
+    if isinstance(obj, (enum.Enum, enum.Flag)):
         return obj.name
     return obj
 

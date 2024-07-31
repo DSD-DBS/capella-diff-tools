@@ -1,5 +1,5 @@
 <!--
- ~ Copyright DB Netz AG and contributors
+ ~ Copyright DB InfraGO AG and contributors
  ~ SPDX-License-Identifier: Apache-2.0
  -->
 
@@ -80,7 +80,7 @@ The key differences are:
     https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 
   When writing docstrings for functions, use the imperative style, as per
-  [PEP-257]). For example, write "Do X and Y" instead of "Does X and Y".
+  [PEP-257]. For example, write "Do X and Y" instead of "Does X and Y".
 
   [pep-257]: https://peps.python.org/pep-0257/
 
