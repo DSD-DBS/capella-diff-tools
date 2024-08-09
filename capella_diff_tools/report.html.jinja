@@ -109,11 +109,35 @@
     {% if key in objects %}
         <h4 style="color: {{color}}">{{key | upper}} ({{ objects[key] | length }})</h4>
         <div class="section">
-            <ul>
-                {% for obj in objects[key] %}
-                <li>{{obj["display_name"] | e}}</li>
+            {% set parent_dict = {} %}
+            {% for obj in objects[key] %}
+                {% if "parent" in obj["attributes"] %}
+                    {% set parent_name = obj["attributes"]["parent"]["display_name"] %}
+                    {% set display_name = obj["display_name"] %}
+                    {% if parent_name in parent_dict %}
+                        {% set _ = parent_dict[parent_name].append(obj) %}
+                    {% else %}
+                        {% set _ = parent_dict.update({parent_name: [obj]}) %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% if parent_dict %}
+                {% for parent, children in parent_dict.items() %}
+                    <h5>{{ parent | e }}</h5>
+                    <ul>
+                        {% for child in children %}
+                            <li>{{ child.display_name | e }}</li>
+                            <ul>
+                                {% for key, value in child.attributes.items() %}
+                                    {% if key in ["start", "finish", "source", "target"] %}
+                                        <li><strong>{{ key | e }}</strong>: {{ value.display_name | e }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    </ul>
                 {% endfor %}
-            </ul>
+            {% endif %}
         </div>
     {% endif %}
 {% endmacro %}
@@ -132,9 +156,15 @@
                 {% for change in obj["attributes"] %}
                 <li><b>{{ change }}</b>:
                     {% if "diff" in obj["attributes"][change] %}
-                        {{ obj["attributes"][change]["diff"] }}
-                    {% else %}
-                        {{ obj["attributes"][change]["previous"] | e }} -&gt; {{ obj["attributes"][change]["current"] | e }}
+                        {% if change == "description" %}
+                            <ul>
+                                <li><strong>Previous</strong>: {{ obj["attributes"][change]["previous"] | safe }}</li>
+                                <li><strong>Current</strong>: {{ obj["attributes"][change]["current"] | safe }}</li>
+                                <li><strong>Diff</strong>: {{ obj["attributes"][change]["diff"] | safe }}</li>
+                            </ul>
+                        {% else %}
+                            {{ obj["attributes"][change]["diff"] }}
+                        {% endif %}
                     {% endif %}
                 </li>
                 {% endfor %}

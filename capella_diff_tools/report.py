@@ -7,6 +7,7 @@ __all__ = [
 ]
 
 import copy
+import re
 import typing as t
 
 import click
@@ -52,7 +53,7 @@ def _diff_lists(previous, current):
     previous = {item["uuid"]: item for item in previous}
     for item in current:
         if item["uuid"] not in previous:
-            out.append(f"<li><ins>{item}</ins></li>")
+            out.append(f"<li><ins>{item['display_name']}</ins></li>")
         elif item["uuid"] in previous:
             if item["display_name"] != previous[item["uuid"]]["display_name"]:
                 out.append(
@@ -96,6 +97,12 @@ def _traverse_and_diff(data):
             elif prev_type == curr_type == list:
                 diff = _diff_lists(value["previous"], value["current"])
                 updates[key] = {"diff": diff}
+            elif key == "description":
+                diff = _diff_text(
+                    remove_p_tags(value["previous"]).splitlines(),
+                    remove_p_tags(value["current"]).splitlines(),
+                )
+                updates[key] = {"diff": diff}
 
         elif isinstance(value, list):
             for item in value:
@@ -105,6 +112,10 @@ def _traverse_and_diff(data):
     for key, value in updates.items():
         data[key].update(value)
     return data
+
+
+def remove_p_tags(text):
+    return re.sub(r"</?p>", "", text)
 
 
 def _compute_diff_stats(data):
