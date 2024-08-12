@@ -15,13 +15,12 @@ import typing as t
 
 import capellambse
 import capellambse.model as m
-import capellambse.model.common as c
 
 from . import types
 
 logger = logging.getLogger(__name__)
 
-_T = t.TypeVar("_T", bound=c.GenericElement)
+_T = t.TypeVar("_T", bound=m.ModelElement)
 
 
 def compare_all_diagrams(
@@ -71,7 +70,7 @@ def _compare_diagrams_on_layer(
 
 
 def _diag2dict(
-    obj: m.diagram.Diagram | c.GenericElement,
+    obj: m.Diagram | m.ModelElement,
 ) -> types.FullDiagram:
     """Serialize a diagram element into a dict.
 
@@ -81,9 +80,7 @@ def _diag2dict(
     return {"uuid": obj.uuid, "display_name": _get_name(obj)}
 
 
-def _diag2diff(
-    old: m.diagram.Diagram, new: m.diagram.Diagram
-) -> types.ChangedDiagram | None:
+def _diag2diff(old: m.Diagram, new: m.Diagram) -> types.ChangedDiagram | None:
     """Serialize the differences between the old and new diagram.
 
     This function is used for diagrams that were modified. Newly
@@ -148,9 +145,9 @@ def compare_all_objects(
 
 def _group_all_objects(
     model: capellambse.MelodyModel,
-) -> dict[str, dict[str, c.ElementList[c.GenericElement]]]:
+) -> dict[str, dict[str, m.ElementList[m.ModelElement]]]:
     """Return a dict of all objects, grouped by layer."""
-    result: dict[str, dict[str, c.ElementList[c.GenericElement]]]
+    result: dict[str, dict[str, m.ElementList[m.ModelElement]]]
     result = {"oa": {}, "sa": {}, "la": {}, "pa": {}}
     for layer, objs in result.items():
         ungrouped = sorted(
@@ -158,15 +155,15 @@ def _group_all_objects(
             key=lambda i: type(i).__name__,
         )
         for objtype, group in itertools.groupby(ungrouped, key=type):
-            objs[objtype.__name__] = c.ElementList(
+            objs[objtype.__name__] = m.ElementList(
                 model, [i._element for i in group], objtype
             )
     return result
 
 
 def _compare_object_type(
-    old: c.ElementList[_T],
-    new: c.ElementList[_T],
+    old: m.ElementList[_T],
+    new: m.ElementList[_T],
 ) -> types.ObjectChange:
     changes: types.ObjectChange = {}
 
@@ -188,7 +185,7 @@ def _compare_object_type(
     return changes
 
 
-def _obj2dict(obj: c.GenericElement) -> types.FullObject:
+def _obj2dict(obj: m.ModelElement) -> types.FullObject:
     """Serialize a model object into a dict.
 
     This function is used for objects that were either created or
@@ -197,7 +194,7 @@ def _obj2dict(obj: c.GenericElement) -> types.FullObject:
     attributes: dict[str, t.Any] = {}
     for attr in dir(type(obj)):
         acc = getattr(type(obj), attr, None)
-        if isinstance(acc, c.AttributeProperty):
+        if isinstance(acc, m.BasePOD):
             val = getattr(obj, attr)
             if val is None:
                 continue
@@ -210,7 +207,7 @@ def _obj2dict(obj: c.GenericElement) -> types.FullObject:
 
 
 def _obj2diff(
-    old: c.GenericElement, new: c.GenericElement
+    old: m.ModelElement, new: m.ModelElement
 ) -> types.ChangedObject | None:
     """Serialize the differences between the old and new object.
 
@@ -224,7 +221,7 @@ def _obj2diff(
     for attr in dir(type(old)):
         if not isinstance(
             getattr(type(old), attr, None),
-            (c.AttributeProperty, c.AttrProxyAccessor, c.LinkAccessor),
+            (m.BasePOD, m.AttrProxyAccessor, m.LinkAccessor),
         ):
             continue
 
@@ -259,16 +256,16 @@ def _obj2diff(
             else:
                 raise
 
-        if isinstance(old_val, c.GenericElement) and isinstance(
-            new_val, c.GenericElement
+        if isinstance(old_val, m.ModelElement) and isinstance(
+            new_val, m.ModelElement
         ):
             if old_val.uuid != new_val.uuid:
                 attributes[attr] = {
                     "previous": _serialize_obj(old_val),
                     "current": _serialize_obj(new_val),
                 }
-        elif isinstance(old_val, c.ElementList) and isinstance(
-            new_val, c.ElementList
+        elif isinstance(old_val, m.ElementList) and isinstance(
+            new_val, m.ElementList
         ):
             if [i.uuid for i in old_val] != [i.uuid for i in new_val]:
                 attributes[attr] = {
@@ -291,16 +288,16 @@ def _obj2diff(
 
 
 def _serialize_obj(obj: t.Any) -> t.Any:
-    if isinstance(obj, c.GenericElement):
+    if isinstance(obj, m.ModelElement):
         return {"uuid": obj.uuid, "display_name": _get_name(obj)}
-    elif isinstance(obj, c.ElementList):
+    elif isinstance(obj, m.ElementList):
         return [{"uuid": i.uuid, "display_name": _get_name(i)} for i in obj]
     elif isinstance(obj, (enum.Enum, enum.Flag)):
         return obj.name
     return obj
 
 
-def _get_name(obj: m.diagram.Diagram | c.GenericElement) -> str:
+def _get_name(obj: m.Diagram | m.ModelElement) -> str:
     """Return the object's name.
 
     If the object doesn't own a name, its type is returned instead.
