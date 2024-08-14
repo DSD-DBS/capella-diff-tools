@@ -98,12 +98,12 @@ def _traverse_and_diff(data):
                 diff = _diff_lists(value["previous"], value["current"])
                 updates[key] = {"diff": diff}
             elif key == "description":
-                diff = _diff_text(
-                    remove_p_tags(value["previous"]).splitlines(),
-                    remove_p_tags(value["current"]).splitlines(),
+                prev, curr = _diff_description(
+                    value["previous"].splitlines(),
+                    value["current"].splitlines(),
                 )
-                updates[key] = {"diff": diff}
-
+                updates[key] = {"diff": ""}
+                value.update({"previous": prev, "current": curr})
         elif isinstance(value, list):
             for item in value:
                 _traverse_and_diff(item)
@@ -114,8 +114,27 @@ def _traverse_and_diff(data):
     return data
 
 
-def remove_p_tags(text):
-    return re.sub(r"</?p>", "", text)
+def _diff_description(previous, current):
+    dmp = diff_match_patch.diff_match_patch()
+    diff = dmp.diff_main("\n".join(previous), "\n".join(current))
+    dmp.diff_cleanupSemantic(diff)
+    previous_result = ""
+    current_result = ""
+    for operation, text in diff:
+        if operation == 0:
+            previous_result += text
+            current_result += text
+        elif operation == -1:
+            text = _wrap_text(text, "removed")
+            previous_result += f"<removed>{text}</removed>"
+        elif operation == 1:
+            text = _wrap_text(text, "added")
+            current_result += f"<added>{text}</added>"
+    return previous_result, current_result
+
+
+def _wrap_text(text, tag):
+    return re.sub(r"(<[^>]+>)(.*?)(</[^>]+>)", rf"\1<{tag}>\2</{tag}>\3", text)
 
 
 def _compute_diff_stats(data):
