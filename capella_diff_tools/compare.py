@@ -142,7 +142,6 @@ def compare_all_objects(
             changes = _compare_object_type(old_layerobjs, new_layerobjs)
             if changes:
                 result.setdefault(layer, {})[obj_type] = changes
-
     return result
 
 
@@ -197,11 +196,27 @@ def _obj2dict(obj: c.GenericElement) -> types.FullObject:
     attributes: dict[str, t.Any] = {}
     for attr in dir(type(obj)):
         acc = getattr(type(obj), attr, None)
-        if isinstance(acc, c.AttributeProperty):
-            val = getattr(obj, attr)
-            if val is None:
-                continue
-            attributes[attr] = _serialize_obj(val)
+        if not isinstance(acc, c.AttributeProperty) and attr not in [
+            "parent",
+            "source",
+            "target",
+            "start",
+            "finish",
+        ]:
+            continue
+
+        val = getattr(obj, attr)
+        if val is None:
+            continue
+        attributes[attr] = _serialize_obj(val)
+
+    if hasattr(obj, "source") and hasattr(obj, "target"):
+        attributes["source"] = _serialize_obj(obj.source)
+        attributes["target"] = _serialize_obj(obj.target)
+    elif hasattr(obj, "start") and hasattr(obj, "finish"):
+        attributes["start"] = _serialize_obj(obj.start)
+        attributes["finish"] = _serialize_obj(obj.finish)
+
     return {
         "uuid": obj.uuid,
         "display_name": _get_name(obj),
@@ -222,9 +237,12 @@ def _obj2diff(
     """
     attributes: dict[str, types.ChangedAttribute] = {}
     for attr in dir(type(old)):
-        if not isinstance(
-            getattr(type(old), attr, None),
-            (c.AttributeProperty, c.AttrProxyAccessor, c.LinkAccessor),
+        if (
+            not isinstance(
+                getattr(type(old), attr, None),
+                (c.AttributeProperty, c.AttrProxyAccessor, c.LinkAccessor),
+            )
+            and attr != "parent"
         ):
             continue
 

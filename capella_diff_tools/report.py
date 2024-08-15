@@ -52,7 +52,7 @@ def _diff_lists(previous, current):
     previous = {item["uuid"]: item for item in previous}
     for item in current:
         if item["uuid"] not in previous:
-            out.append(f"<li><ins>{item}</ins></li>")
+            out.append(f"<li><ins>{item['display_name']}</ins></li>")
         elif item["uuid"] in previous:
             if item["display_name"] != previous[item["uuid"]]["display_name"]:
                 out.append(
@@ -96,7 +96,13 @@ def _traverse_and_diff(data):
             elif prev_type == curr_type == list:
                 diff = _diff_lists(value["previous"], value["current"])
                 updates[key] = {"diff": diff}
-
+            elif key == "description":
+                prev, curr = _diff_description(
+                    value["previous"].splitlines(),
+                    value["current"].splitlines(),
+                )
+                updates[key] = {"diff": ""}
+                value.update({"previous": prev, "current": curr})
         elif isinstance(value, list):
             for item in value:
                 _traverse_and_diff(item)
@@ -105,6 +111,23 @@ def _traverse_and_diff(data):
     for key, value in updates.items():
         data[key].update(value)
     return data
+
+
+def _diff_description(previous, current):
+    dmp = diff_match_patch.diff_match_patch()
+    diff = dmp.diff_main("\n".join(previous), "\n".join(current))
+    dmp.diff_cleanupSemantic(diff)
+    previous_result = ""
+    current_result = ""
+    for operation, text in diff:
+        if operation == 0:
+            previous_result += text
+            current_result += text
+        elif operation == -1:
+            previous_result += f"<del class='text-removed'>{text}</del>"
+        elif operation == 1:
+            current_result += f"<ins class='text-added'>{text}</ins>"
+    return previous_result, current_result
 
 
 def _compute_diff_stats(data):
