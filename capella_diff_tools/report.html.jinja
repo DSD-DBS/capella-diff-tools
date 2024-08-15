@@ -34,6 +34,16 @@
             .created, ins {
                 color: #00aa00;
             }
+            .text-removed, del > p {
+                background: #ffe6e6;
+                text-decoration: none;
+                display: inline;
+            }
+            .text-added, ins > p {
+                background: #e6ffe6;
+                text-decoration: none;
+                display: inline;
+            }
             /* nice table style with borders, bold th*/
             table {
                 border-collapse: collapse;
@@ -48,12 +58,6 @@
             table td {
                 border: 1px solid #ccc;
                 padding: 0.25em;
-            }
-            removed{
-                background-color: #ffaaaa;
-            }
-            added {
-                background-color: #aaffaa;
             }
         </style>
     </head>
@@ -166,7 +170,6 @@
                             <ul>
                                 <li><strong>Previous</strong>: {{ obj["attributes"][change]["previous"] | safe }}</li>
                                 <li><strong>Current</strong>: {{ obj["attributes"][change]["current"] | safe }}</li>
-                                <li><strong>Diff</strong>: {{ obj["attributes"][change]["diff"] | safe }}</li>
                             </ul>
                         {% else %}
                             {{ obj["attributes"][change]["diff"] }}

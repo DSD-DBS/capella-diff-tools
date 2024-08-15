@@ -7,7 +7,6 @@ __all__ = [
 ]
 
 import copy
-import re
 import typing as t
 
 import click
@@ -125,16 +124,10 @@ def _diff_description(previous, current):
             previous_result += text
             current_result += text
         elif operation == -1:
-            text = _wrap_text(text, "removed")
-            previous_result += f"<removed>{text}</removed>"
+            previous_result += f"<del class='text-removed'>{text}</del>"
         elif operation == 1:
-            text = _wrap_text(text, "added")
-            current_result += f"<added>{text}</added>"
+            current_result += f"<ins class='text-added'>{text}</ins>"
     return previous_result, current_result
-
-
-def _wrap_text(text, tag):
-    return re.sub(r"(<[^>]+>)(.*?)(</[^>]+>)", rf"\1<{tag}>\2</{tag}>\3", text)
 
 
 def _compute_diff_stats(data):
