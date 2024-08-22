@@ -2,6 +2,72 @@
   Copyright DB Netz AG and contributors
   SPDX-License-Identifier: Apache-2.0
   -#}
+{%- set result = {
+    "metadata":
+    {
+        "model": {
+            "path": "path/to/model",
+            "entrypoint": "entrypoint"
+        },
+        "old_revision": {
+            "author": "author",
+            "revision": "revision",
+            "date": "date",
+            "description": "description",
+            "hash": "hash"
+        },
+        "new_revision": {
+            "author": "author",
+            "revision": "revision",
+            "date": "date",
+            "description": "description",
+            "hash": "hash"
+        }
+    },
+    "layers": {
+        "oa": {
+            "stats": {
+                "created": 1,
+                "deleted": 1,
+                "modified": 1
+            },
+            "children": {                
+                "par1 - uuid": {
+                    "attributes": None,
+                    "children": {
+                        "par2 - uuid": {
+                            "attributes": None,
+                            "children": {
+                                "par3 - uuid": {
+                                    "display_name": "Par 3",
+                                    
+                                    "attributes": {
+                                        "description": {
+                                            "previous": "Old description",
+                                            "current": "New description",
+                                        },
+                                    },
+                                    "children": {
+                                        "FunctionName1 - uuid": {
+                                            "display_name": "FunctionName1 -> New Obj (Can be new, Can be modified, Can be deleted)",
+                                            "change": None,
+                                            "attributes": None,
+                                            "children": None,
+                                        },
+                                        "FunctionName2 - uuid": "FunctionName2 -> Modified Obj",
+                                    },
+                                }
+                            },
+                        }
+                    },
+                },
+            }
+        },
+        "la": None,
+        "sa": None,
+    }
+} -%}
+
 <html>
     <head>
         <style>
@@ -188,25 +254,30 @@
     </div>
 {% endmacro %}
 
-        <h1>Object Changes {{ pretty_stats(data["objects"].stats) }}</h1>
+{% macro display_object(obj) %}
+    {% if obj.attributes %}
+        <ul>
+            {% for key, value in obj.attributes.items() %}
+                <li><strong>{{ key | e }}</strong>: {{ value | e }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if obj.children %}
+        <ul>
+            {% for key, value in obj.children.items() %}
+                <li><strong>{{ key | e }}</strong>: {{ value.display_name | e }}</li>
+                {{ display_object(value) }}
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro%}
+
         <div class="section">
         {% set LAYER = {"oa": "Operational Analysis", "sa": "System Analysis", "la": "Logical Architecture", "pa": "Physical Architecture"}%}
-        {% for layer in ["oa", "sa", "la", "pa"] %}
-            {% set layer_data = data["objects"][layer] %}
-            {% if layer_data and layer_data.stats %}
-                <h2>{{LAYER[layer]}} {{ pretty_stats(layer_data.stats) }}</h2>
-
-
-            <div class="section">
-            {% for obj_type in data["objects"][layer] if obj_type != "stats" %}
-                {% set obj_type_items = data["objects"][layer][obj_type] %}
-                {% if obj_type_items.stats %}
-                <h3>{{obj_type}} {{pretty_stats(obj_type_items.stats)}}</h3>
-                {{ spell_changes_out(obj_type_items) }}
-                {% endif %}
-            {% endfor %}
-            </div>
-            {% endif %}
+        {% for layer, layer_name in LAYER.items() %}
+            {% set layer_data = data["layers"][layer] %}
+            <h1> {{ layer_name }} {{ pretty_stats(layer_data.stats) }}</h1>
+            {{ display_object(layer_data)}}
         {% endfor %}
         </div>
 

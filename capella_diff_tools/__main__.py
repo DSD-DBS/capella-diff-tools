@@ -73,20 +73,22 @@ def main(
         "old_revision": _get_revision_info(old_model, old_version),
         "new_revision": _get_revision_info(new_model, new_version),
     }
-    objects = compare.compare_all_objects(old_model, new_model)
-    diagrams = compare.compare_all_diagrams(old_model, new_model)
+    layers = compare.compare_models(old_model, new_model)
+    # diagrams = compare.compare_all_diagrams(old_model, new_model)
 
     result: types.ChangeSummaryDocument = {
         "metadata": metadata,
-        "diagrams": diagrams,
-        "objects": objects,
+        "diagrams": {},
+        "layers": layers,
     }
 
     if output_file is report_file is None:
         output_file = sys.stdout
 
     if output_file is not None:
-        yaml.dump(result, output_file, Dumper=CustomYAMLDumper)
+        yaml.dump(
+            result, output_file, Dumper=CustomYAMLDumper, sort_keys=False
+        )
     if report_file is not None:
         report_file.write(report.generate_html(result))
 

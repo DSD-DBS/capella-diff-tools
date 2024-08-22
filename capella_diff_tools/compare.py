@@ -240,7 +240,11 @@ def _obj2diff(
         if (
             not isinstance(
                 getattr(type(old), attr, None),
-                (c.AttributeProperty, c.AttrProxyAccessor, c.LinkAccessor),
+                (
+                    c.AttributeProperty,
+                    c.AttrProxyAccessor,
+                    c.LinkAccessor,
+                ),  # c.RoleTagAccessor, c.DirectProxyAccessor
             )
             and attr != "parent"
         ):
@@ -318,13 +322,153 @@ def _serialize_obj(obj: t.Any) -> t.Any:
     return obj
 
 
-def _get_name(obj: m.diagram.Diagram | c.GenericElement) -> str:
+def _get_name(obj: m.diagram.Diagram | c.ModelObject) -> str:
     """Return the object's name.
 
     If the object doesn't own a name, its type is returned instead.
     """
-    try:
-        name = obj.name
-    except AttributeError:
-        name = ""
-    return name or f"[{type(obj).__name__}]"
+    return getattr(obj, "name", None) or f"[{type(obj).__name__}]"
+
+
+def compare_models(
+    old: capellambse.MelodyModel,
+    new: capellambse.MelodyModel,
+):
+    """Compare all elements in the given models."""
+    changes = {}
+    for layer in (
+        "oa",
+        "sa",
+        "la",
+        "pa",
+    ):
+        layer_old = getattr(old, layer)
+        layer_new = getattr(new, layer)
+        changes[layer] = compare_objects(layer_old, layer_new, old)
+    return changes
+
+
+def compare_objects(
+    old_object: capellambse.ModelObject | None,
+    new_object: capellambse.ModelObject,
+    old_model: capellambse.MelodyModel,
+):
+    if not (old_object is None or type(old_object) is type(new_object)):
+        print(f"{type(old_object).__name__} != {type(new_object).__name__}")
+        breakpoint()
+    attributes: dict[str, types.ChangedAttribute] = {}
+    children = {}
+    for attr in dir(type(new_object)):
+        acc = getattr(type(new_object), attr, None)
+        if isinstance(acc, c.AttributeProperty) and attr == "uuid":
+            old_value = getattr(old_object, attr, None)
+            new_value = getattr(new_object, attr, None)
+            if old_value != new_value:
+                attributes[attr] = {
+                    "previous": _serialize_obj(old_value),
+                    "current": _serialize_obj(new_value),
+                }
+        elif isinstance(
+            acc, c.AttrProxyAccessor | c.LinkAccessor | c.ParentAccessor
+        ):
+            old_value = getattr(old_object, attr, None)
+            new_value = getattr(new_object, attr, None)
+            if isinstance(
+                old_value, c.GenericElement | type(None)
+            ) and isinstance(new_value, c.GenericElement | type(None)):
+                if old_value is new_value is None:
+                    pass
+                elif old_value is None:
+                    attributes[attr] = {
+                        "previous": None,
+                        "current": _serialize_obj(new_value),
+                    }
+                elif new_value is None:
+                    attributes[attr] = {
+                        "previous": _serialize_obj(old_value),
+                        "current": None,
+                    }
+                elif old_value.uuid != new_value.uuid:
+                    attributes[attr] = {
+                        "previous": _serialize_obj(old_value),
+                        "current": _serialize_obj(new_value),
+                    }
+            elif isinstance(
+                old_value, c.ElementList | type(None)
+            ) and isinstance(new_value, c.ElementList):
+                old_value = old_value or []
+                if [i.uuid for i in old_value] != [i.uuid for i in new_value]:
+                    attributes[attr] = {
+                        "previous": _serialize_obj(old_value),
+                        "current": _serialize_obj(new_value),
+                    }
+            else:
+                raise RuntimeError(
+                    f"Type mismatched between new value and old value:"
+                    f" {type(old_value)} != {type(new_value)}"
+                )
+        elif isinstance(acc, c.RoleTagAccessor | c.DirectProxyAccessor):
+            old_value = getattr(old_object, attr, None)
+            new_value = getattr(new_object, attr, None)
+            if isinstance(
+                old_value, c.GenericElement | type(None)
+            ) and isinstance(new_value, c.GenericElement | type(None)):
+                if old_value is new_value is None:
+                    pass
+                elif old_value is None:
+                    assert new_value is not None
+                    children[new_value.uuid] = compare_objects(
+                        None, new_value, old_model
+                    )
+                elif new_value is None:
+                    children[old_value.uuid] = {
+                        "display_name": _get_name(old_value),
+                        "change": "deleted",
+                    }
+                elif old_value.uuid == new_value.uuid:
+                    result = compare_objects(old_value, new_value, old_model)
+                    if result:
+                        children[new_value.uuid] = result
+                else:
+                    children[old_value.uuid] = {
+                        "display_name": _get_name(old_value),
+                        "change": "deleted",
+                    }
+                    children[new_value.uuid] = compare_objects(
+                        None, new_value, old_model
+                    )
+            elif isinstance(
+                old_value, c.ElementList | type(None)
+            ) and isinstance(new_value, c.ElementList):
+                old_value = old_value or []
+                for item in new_value:
+                    try:
+                        old_item = old_model.by_uuid(item.uuid)
+                    except KeyError:
+                        old_item = None
+                    if old_item is None:
+                        children[item.uuid] = compare_objects(
+                            None, item, old_model
+                        )
+                    else:
+                        result = compare_objects(old_item, item, old_model)
+                        if result:
+                            children[item.uuid] = result
+
+                for item in old_value:
+                    try:
+                        new_object._model.by_uuid(item.uuid)
+                    except KeyError:
+                        children[item.uuid] = {
+                            "display_name": _get_name(item),
+                            "change": "deleted",
+                        }
+
+    if attributes or children or old_object is None:
+        return {
+            "display_name": _get_name(new_object),
+            "change": "created" if old_object is None else "modified",
+            "attributes": attributes,
+            "children": children,
+        }
+    return None

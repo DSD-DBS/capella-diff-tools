@@ -42,9 +42,8 @@ def _diff_text(previous, current):
 
 def _diff_objects(previous, current):
     return (
-        f"<del>{previous['display_name']}</del>"
-        f" → <ins>{current['display_name']}</ins>"
-    )
+        f"<del>{previous['display_name']}</del> → " if previous else ""
+    ) + f"<ins>{current['display_name']}</ins>"
 
 
 def _diff_lists(previous, current):
@@ -82,23 +81,23 @@ def _traverse_and_diff(data):
             and "previous" in value
             and "current" in value
         ):
-            prev_type = type(value["previous"])
             curr_type = type(value["current"])
-            if prev_type == curr_type == str:
+            if curr_type == str:
                 diff = _diff_text(
-                    value["previous"].splitlines(),
+                    (value["previous"] or "").splitlines(),
                     value["current"].splitlines(),
                 )
                 updates[key] = {"diff": diff}
-            elif prev_type == curr_type == dict:
+            elif curr_type == dict:
                 diff = _diff_objects(value["previous"], value["current"])
                 updates[key] = {"diff": diff}
-            elif prev_type == curr_type == list:
+            elif curr_type == list:
                 diff = _diff_lists(value["previous"], value["current"])
                 updates[key] = {"diff": diff}
             elif key == "description":
+
                 prev, curr = _diff_description(
-                    value["previous"].splitlines(),
+                    (value["previous"] or "").splitlines(),
                     value["current"].splitlines(),
                 )
                 updates[key] = {"diff": ""}
