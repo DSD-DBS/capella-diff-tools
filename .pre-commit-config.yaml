@@ -50,6 +50,7 @@ repos:
     hooks:
       - id: mypy
         additional_dependencies:
+          - capellambse==0.6.6
           - types-pyyaml
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.4

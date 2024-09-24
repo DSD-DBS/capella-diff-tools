@@ -5,17 +5,18 @@ from __future__ import annotations
 
 import datetime
 import logging
+import os
 import pathlib
 import sys
 import typing as t
 
 import capellambse
 import capellambse.filehandler.git
+import capellambse.model as m
 import click
 import markupsafe
 import yaml
 from capellambse import filehandler as fh
-from capellambse.model import common as c
 
 import capella_diff_tools
 
@@ -23,7 +24,7 @@ from . import compare, report, types
 
 logger = logging.getLogger(__name__)
 
-_T = t.TypeVar("_T", bound=c.GenericElement)
+_T = t.TypeVar("_T", bound=m.ModelElement)
 
 
 @click.command()
@@ -32,7 +33,7 @@ _T = t.TypeVar("_T", bound=c.GenericElement)
     prog_name="Capella Diff Tools",
     message="%(prog)s %(version)s",
 )
-@click.argument("model", type=capellambse.cli_helpers.ModelInfoCLI())
+@click.argument("model", type=capellambse.ModelInfoCLI())
 @click.argument("old_version")
 @click.argument("new_version")
 @click.option(
@@ -91,7 +92,7 @@ def main(
         report_file.write(report.generate_html(result))
 
 
-def _ensure_git(path: str | pathlib.Path) -> str:
+def _ensure_git(path: str | os.PathLike[str]) -> str:
     proto, path = fh.split_protocol(path)
     if proto == "file":
         assert isinstance(path, pathlib.Path)
@@ -110,9 +111,11 @@ def _get_revision_info(
     revision: str,
 ) -> types.RevisionInfo:
     """Return the revision info of the given model."""
-    info = model.info
     res = model._loader.resources["\x00"]
     assert isinstance(res, fh.git.GitFileHandler)
+    info = res.get_model_info()
+    assert isinstance(info, fh.git.GitHandlerInfo)
+    assert t.assert_type(info.rev_hash, str) is not None
     author, date_str, description = res._git(
         "log",
         "-1",
@@ -120,7 +123,6 @@ def _get_revision_info(
         info.rev_hash,
         encoding="utf-8",
     ).split("\x00")
-    assert info.rev_hash is not None
     return {
         "hash": info.rev_hash,
         "revision": revision,
