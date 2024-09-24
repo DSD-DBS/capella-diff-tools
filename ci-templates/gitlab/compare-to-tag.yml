@@ -1,0 +1,24 @@
+# Copyright DB InfraGO AG and contributors
+# SPDX-License-Identifier: Apache-2.0
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json
+
+compare-to-tag:
+  image: python:3.12
+  script:
+    - oldversion="$(git describe --tags --abbrev=0 || true)"
+    - if ! [[ $oldversion ]]; then echo >&2 No recent tag found to compare against; exit 0; fi
+    - |-
+      # Install capella-diff-tools from PyPI or Github
+      if [[ ${CAPELLA_DIFF_TOOLS_VERSION:-vX.Y.Z} = v*.*.* ]]; then
+        pip install "capella-diff-tools${CAPELLA_DIFF_TOOLS_VERSION:+==$CAPELLA_DIFF_TOOLS_VERSION}"
+      else
+        pip install "git+https://github.com/DSD-DBS/capella-diff-tools.git@$CAPELLA_DIFF_TOOLS_VERSION"
+      fi
+    - capella-diff-tool ${ENTRYPOINT:-.} "$oldversion" HEAD -o model-diff.yml -r model-diff.html
+
+  artifacts:
+    paths: [model-diff.html, model-diff.yml]
+
+variables:
+  CAPELLA_DIFF_TOOLS_VERSION:
+    description: Version of capella-diff-tools to install. Should be the same as the version of this template.
