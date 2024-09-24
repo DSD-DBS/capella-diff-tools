@@ -1,4 +1,4 @@
-# Copyright DB Netz AG and contributors
+# Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ ENV = jinja2.Environment(
 
 
 class _CustomLoader(yaml.SafeLoader):
-    def construct_html(self, node):
+    def construct_html(self, node: t.Any) -> t.Any:
         data = self.construct_scalar(node)
         return markupsafe.Markup(data)
 
@@ -33,21 +33,21 @@ class _CustomLoader(yaml.SafeLoader):
 _CustomLoader.add_constructor("!html", _CustomLoader.construct_html)
 
 
-def _diff_text(previous, current):
+def _diff_text(previous: str, current: str) -> t.Any:
     dmp = diff_match_patch.diff_match_patch()
     diff = dmp.diff_main("\n".join(previous), "\n".join(current))
     dmp.diff_cleanupSemantic(diff)
     return dmp.diff_prettyHtml(diff)
 
 
-def _diff_objects(previous, current):
+def _diff_objects(previous: t.Any, current: t.Any) -> t.Any:
     return (
         f"<del>{previous['display_name']}</del>"
         f" → <ins>{current['display_name']}</ins>"
     )
 
 
-def _diff_lists(previous, current):
+def _diff_lists(previous: t.Any, current: t.Any) -> t.Any:
     out = []
     previous = {item["uuid"]: item for item in previous}
     for item in current:
@@ -67,7 +67,7 @@ def _diff_lists(previous, current):
     return "<ul>" + "".join(out) + "</ul>"
 
 
-def _traverse_and_diff(data):
+def _traverse_and_diff(data: t.Any) -> t.Any:
     """Traverse the data and perform diff on text fields.
 
     This function recursively traverses the data and performs an HTML
@@ -84,16 +84,16 @@ def _traverse_and_diff(data):
         ):
             prev_type = type(value["previous"])
             curr_type = type(value["current"])
-            if prev_type == curr_type == str:
+            if prev_type is curr_type is str:
                 diff = _diff_text(
                     value["previous"].splitlines(),
                     value["current"].splitlines(),
                 )
                 updates[key] = {"diff": diff}
-            elif prev_type == curr_type == dict:
+            elif prev_type is curr_type is dict:
                 diff = _diff_objects(value["previous"], value["current"])
                 updates[key] = {"diff": diff}
-            elif prev_type == curr_type == list:
+            elif prev_type is curr_type is list:
                 diff = _diff_lists(value["previous"], value["current"])
                 updates[key] = {"diff": diff}
 
@@ -107,7 +107,7 @@ def _traverse_and_diff(data):
     return data
 
 
-def _compute_diff_stats(data):
+def _compute_diff_stats(data: t.Any) -> t.Any:
     """Compute the diff stats for the data.
 
     This function collects the diff stats for the data, i.e. how many
