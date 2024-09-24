@@ -1,0 +1,7 @@
+capella-diff-tools
+==================
+
+.. toctree::
+   :maxdepth: 4
+
+   capella_diff_tools

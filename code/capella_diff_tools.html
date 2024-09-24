@@ -1,0 +1,792 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="capella-diff-tools" href="modules.html" />
+
+    <!-- Generated with Sphinx 8.0.2 and Furo 2024.08.06 -->
+        <title>capella_diff_tools package - Capella Diff Tools documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Capella Diff Tools  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Capella Diff Tools  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">capella-diff-tools</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of capella-diff-tools</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">capella_diff_tools package</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/code/capella_diff_tools.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="capella-diff-tools-package">
+<h1>capella_diff_tools package<a class="headerlink" href="#capella-diff-tools-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-capella_diff_tools.compare">
+<span id="capella-diff-tools-compare-module"></span><h2>capella_diff_tools.compare module<a class="headerlink" href="#module-capella_diff_tools.compare" title="Link to this heading">¶</a></h2>
+<p>Functions for comparing different types of objects in a Capella model.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="capella_diff_tools.compare.compare_all_diagrams">
+<span class="sig-prename descclassname"><span class="pre">capella_diff_tools.compare.</span></span><span class="sig-name descname"><span class="pre">compare_all_diagrams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MelodyModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MelodyModel</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#capella_diff_tools.types.DiagramChanges" title="capella_diff_tools.types.DiagramChanges"><span class="pre">DiagramChanges</span></a></span></span><a class="headerlink" href="#capella_diff_tools.compare.compare_all_diagrams" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="capella_diff_tools.compare.compare_all_objects">
+<span class="sig-prename descclassname"><span class="pre">capella_diff_tools.compare.</span></span><span class="sig-name descname"><span class="pre">compare_all_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MelodyModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MelodyModel</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#capella_diff_tools.types.ObjectChanges" title="capella_diff_tools.types.ObjectChanges"><span class="pre">ObjectChanges</span></a></span></span><a class="headerlink" href="#capella_diff_tools.compare.compare_all_objects" title="Link to this definition">¶</a></dt>
+<dd><p>Compare all objects in the given models.</p>
+</dd></dl>
+
+</section>
+<section id="module-capella_diff_tools.report">
+<span id="capella-diff-tools-report-module"></span><h2>capella_diff_tools.report module<a class="headerlink" href="#module-capella_diff_tools.report" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="capella_diff_tools.report.generate_html">
+<span class="sig-prename descclassname"><span class="pre">capella_diff_tools.report.</span></span><span class="sig-name descname"><span class="pre">generate_html</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#capella_diff_tools.types.ChangeSummaryDocument" title="capella_diff_tools.types.ChangeSummaryDocument"><span class="pre">ChangeSummaryDocument</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Markup</span></span></span><a class="headerlink" href="#capella_diff_tools.report.generate_html" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-capella_diff_tools.types">
+<span id="capella-diff-tools-types-module"></span><h2>capella_diff_tools.types module<a class="headerlink" href="#module-capella_diff_tools.types" title="Link to this heading">¶</a></h2>
+<p>Types for annotating functions in the diff tool.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.BaseObject">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">BaseObject</span></span><a class="headerlink" href="#capella_diff_tools.types.BaseObject" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.BaseObject.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.BaseObject.display_name" title="Link to this definition">¶</a></dt>
+<dd><p>Name for displaying in the frontend.</p>
+<p>This is usually the <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute of the “current” version of
+the object.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.BaseObject.uuid">
+<span class="sig-name descname"><span class="pre">uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.BaseObject.uuid" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangeSummaryDocument">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">ChangeSummaryDocument</span></span><a class="headerlink" href="#capella_diff_tools.types.ChangeSummaryDocument" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangeSummaryDocument.diagrams">
+<span class="sig-name descname"><span class="pre">diagrams</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.DiagramChanges" title="capella_diff_tools.types.DiagramChanges"><span class="pre">DiagramChanges</span></a></em><a class="headerlink" href="#capella_diff_tools.types.ChangeSummaryDocument.diagrams" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangeSummaryDocument.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.Metadata" title="capella_diff_tools.types.Metadata"><span class="pre">Metadata</span></a></em><a class="headerlink" href="#capella_diff_tools.types.ChangeSummaryDocument.metadata" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangeSummaryDocument.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.ObjectChanges" title="capella_diff_tools.types.ObjectChanges"><span class="pre">ObjectChanges</span></a></em><a class="headerlink" href="#capella_diff_tools.types.ChangeSummaryDocument.objects" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedAttribute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">ChangedAttribute</span></span><a class="headerlink" href="#capella_diff_tools.types.ChangedAttribute" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedAttribute.current">
+<span class="sig-name descname"><span class="pre">current</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></em><a class="headerlink" href="#capella_diff_tools.types.ChangedAttribute.current" title="Link to this definition">¶</a></dt>
+<dd><p>The new value of the attribute.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedAttribute.previous">
+<span class="sig-name descname"><span class="pre">previous</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></em><a class="headerlink" href="#capella_diff_tools.types.ChangedAttribute.previous" title="Link to this definition">¶</a></dt>
+<dd><p>The old value of the attribute.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedDiagram">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">ChangedDiagram</span></span><a class="headerlink" href="#capella_diff_tools.types.ChangedDiagram" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#capella_diff_tools.types.BaseObject" title="capella_diff_tools.types.BaseObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseObject</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedDiagram.changed">
+<span class="sig-name descname"><span class="pre">changed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NotRequired" title="(in Python v3.12)"><span class="pre">NotRequired</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#capella_diff_tools.types.BaseObject" title="capella_diff_tools.types.BaseObject"><span class="pre">BaseObject</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ChangedDiagram.changed" title="Link to this definition">¶</a></dt>
+<dd><p>Objects that were changed on the diagram.</p>
+<p>This does not consider layout changes. See <a class="reference internal" href="#capella_diff_tools.types.ChangedDiagram.layout_changes" title="capella_diff_tools.types.ChangedDiagram.layout_changes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">layout_changes</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedDiagram.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.ChangedDiagram.display_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedDiagram.introduced">
+<span class="sig-name descname"><span class="pre">introduced</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NotRequired" title="(in Python v3.12)"><span class="pre">NotRequired</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#capella_diff_tools.types.BaseObject" title="capella_diff_tools.types.BaseObject"><span class="pre">BaseObject</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ChangedDiagram.introduced" title="Link to this definition">¶</a></dt>
+<dd><p>Objects that were introduced to the diagram.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedDiagram.layout_changes">
+<span class="sig-name descname"><span class="pre">layout_changes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">True</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ChangedDiagram.layout_changes" title="Link to this definition">¶</a></dt>
+<dd><p>Whether the layout of the diagram changed.</p>
+<p>This will always be true if there were any semantic changes to the
+diagram.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedDiagram.removed">
+<span class="sig-name descname"><span class="pre">removed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NotRequired" title="(in Python v3.12)"><span class="pre">NotRequired</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#capella_diff_tools.types.BaseObject" title="capella_diff_tools.types.BaseObject"><span class="pre">BaseObject</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ChangedDiagram.removed" title="Link to this definition">¶</a></dt>
+<dd><p>Objects that were removed from the diagram.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedDiagram.uuid">
+<span class="sig-name descname"><span class="pre">uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.ChangedDiagram.uuid" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedObject">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">ChangedObject</span></span><a class="headerlink" href="#capella_diff_tools.types.ChangedObject" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#capella_diff_tools.types.BaseObject" title="capella_diff_tools.types.BaseObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseObject</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedObject.attributes">
+<span class="sig-name descname"><span class="pre">attributes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.ChangedAttribute" title="capella_diff_tools.types.ChangedAttribute"><span class="pre">ChangedAttribute</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ChangedObject.attributes" title="Link to this definition">¶</a></dt>
+<dd><p>The attributes that were changed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedObject.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.ChangedObject.display_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ChangedObject.uuid">
+<span class="sig-name descname"><span class="pre">uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.ChangedObject.uuid" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.DiagramChange">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">DiagramChange</span></span><a class="headerlink" href="#capella_diff_tools.types.DiagramChange" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.DiagramChange.created">
+<span class="sig-name descname"><span class="pre">created</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#capella_diff_tools.types.FullDiagram" title="capella_diff_tools.types.FullDiagram"><span class="pre">FullDiagram</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.DiagramChange.created" title="Link to this definition">¶</a></dt>
+<dd><p>Diagrams that were created.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.DiagramChange.deleted">
+<span class="sig-name descname"><span class="pre">deleted</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#capella_diff_tools.types.FullDiagram" title="capella_diff_tools.types.FullDiagram"><span class="pre">FullDiagram</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.DiagramChange.deleted" title="Link to this definition">¶</a></dt>
+<dd><p>Diagrams that were deleted.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.DiagramChange.modified">
+<span class="sig-name descname"><span class="pre">modified</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#capella_diff_tools.types.ChangedDiagram" title="capella_diff_tools.types.ChangedDiagram"><span class="pre">ChangedDiagram</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.DiagramChange.modified" title="Link to this definition">¶</a></dt>
+<dd><p>Diagrams that were changed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.DiagramChanges">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">DiagramChanges</span></span><a class="headerlink" href="#capella_diff_tools.types.DiagramChanges" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.DiagramChanges.epbs">
+<span class="sig-name descname"><span class="pre">epbs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.DiagramChange" title="capella_diff_tools.types.DiagramChange"><span class="pre">DiagramChange</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.DiagramChanges.epbs" title="Link to this definition">¶</a></dt>
+<dd><p>Changes on diagrams from the EPBS layer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.DiagramChanges.la">
+<span class="sig-name descname"><span class="pre">la</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.DiagramChange" title="capella_diff_tools.types.DiagramChange"><span class="pre">DiagramChange</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.DiagramChanges.la" title="Link to this definition">¶</a></dt>
+<dd><p>Changes on diagrams from the LogicalAnalysis layer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.DiagramChanges.oa">
+<span class="sig-name descname"><span class="pre">oa</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.DiagramChange" title="capella_diff_tools.types.DiagramChange"><span class="pre">DiagramChange</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.DiagramChanges.oa" title="Link to this definition">¶</a></dt>
+<dd><p>Changes on diagrams from the OperationalAnalysis layer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.DiagramChanges.pa">
+<span class="sig-name descname"><span class="pre">pa</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.DiagramChange" title="capella_diff_tools.types.DiagramChange"><span class="pre">DiagramChange</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.DiagramChanges.pa" title="Link to this definition">¶</a></dt>
+<dd><p>Changes on diagrams from the PhysicalAnalysis layer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.DiagramChanges.sa">
+<span class="sig-name descname"><span class="pre">sa</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.DiagramChange" title="capella_diff_tools.types.DiagramChange"><span class="pre">DiagramChange</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.DiagramChanges.sa" title="Link to this definition">¶</a></dt>
+<dd><p>Changes on diagrams from the SystemAnalysis layer.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.FullDiagram">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">FullDiagram</span></span><a class="headerlink" href="#capella_diff_tools.types.FullDiagram" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#capella_diff_tools.types.BaseObject" title="capella_diff_tools.types.BaseObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseObject</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>A diagram that was created or deleted.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.FullDiagram.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.FullDiagram.display_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.FullDiagram.uuid">
+<span class="sig-name descname"><span class="pre">uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.FullDiagram.uuid" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.FullObject">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">FullObject</span></span><a class="headerlink" href="#capella_diff_tools.types.FullObject" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#capella_diff_tools.types.BaseObject" title="capella_diff_tools.types.BaseObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseObject</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.FullObject.attributes">
+<span class="sig-name descname"><span class="pre">attributes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.FullObject.attributes" title="Link to this definition">¶</a></dt>
+<dd><p>All attributes that the object has (or had).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.FullObject.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.FullObject.display_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.FullObject.uuid">
+<span class="sig-name descname"><span class="pre">uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.FullObject.uuid" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.Metadata">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">Metadata</span></span><a class="headerlink" href="#capella_diff_tools.types.Metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.Metadata.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.Metadata.model" title="Link to this definition">¶</a></dt>
+<dd><p>The ‘modelinfo’ used to load the models, sans the revision key.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.Metadata.new_revision">
+<span class="sig-name descname"><span class="pre">new_revision</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.RevisionInfo" title="capella_diff_tools.types.RevisionInfo"><span class="pre">RevisionInfo</span></a></em><a class="headerlink" href="#capella_diff_tools.types.Metadata.new_revision" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.Metadata.old_revision">
+<span class="sig-name descname"><span class="pre">old_revision</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.RevisionInfo" title="capella_diff_tools.types.RevisionInfo"><span class="pre">RevisionInfo</span></a></em><a class="headerlink" href="#capella_diff_tools.types.Metadata.old_revision" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ObjectChange">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">ObjectChange</span></span><a class="headerlink" href="#capella_diff_tools.types.ObjectChange" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ObjectChange.created">
+<span class="sig-name descname"><span class="pre">created</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#capella_diff_tools.types.FullObject" title="capella_diff_tools.types.FullObject"><span class="pre">FullObject</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ObjectChange.created" title="Link to this definition">¶</a></dt>
+<dd><p>Contains objects that were created.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ObjectChange.deleted">
+<span class="sig-name descname"><span class="pre">deleted</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#capella_diff_tools.types.FullObject" title="capella_diff_tools.types.FullObject"><span class="pre">FullObject</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ObjectChange.deleted" title="Link to this definition">¶</a></dt>
+<dd><p>Contains objects that were deleted.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ObjectChange.modified">
+<span class="sig-name descname"><span class="pre">modified</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#capella_diff_tools.types.ChangedObject" title="capella_diff_tools.types.ChangedObject"><span class="pre">ChangedObject</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ObjectChange.modified" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ObjectChanges">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">ObjectChanges</span></span><a class="headerlink" href="#capella_diff_tools.types.ObjectChanges" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ObjectChanges.epbs">
+<span class="sig-name descname"><span class="pre">epbs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.ObjectChange" title="capella_diff_tools.types.ObjectChange"><span class="pre">ObjectChange</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ObjectChanges.epbs" title="Link to this definition">¶</a></dt>
+<dd><p>Changes to objects from the EPBS layer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ObjectChanges.la">
+<span class="sig-name descname"><span class="pre">la</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.ObjectChange" title="capella_diff_tools.types.ObjectChange"><span class="pre">ObjectChange</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ObjectChanges.la" title="Link to this definition">¶</a></dt>
+<dd><p>Changes to objects from the LogicalAnalysis layer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ObjectChanges.oa">
+<span class="sig-name descname"><span class="pre">oa</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.ObjectChange" title="capella_diff_tools.types.ObjectChange"><span class="pre">ObjectChange</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ObjectChanges.oa" title="Link to this definition">¶</a></dt>
+<dd><p>Changes to objects from the OperationalAnalysis layer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ObjectChanges.pa">
+<span class="sig-name descname"><span class="pre">pa</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.ObjectChange" title="capella_diff_tools.types.ObjectChange"><span class="pre">ObjectChange</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ObjectChanges.pa" title="Link to this definition">¶</a></dt>
+<dd><p>Changes to objects from the PhysicalAnalysis layer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.ObjectChanges.sa">
+<span class="sig-name descname"><span class="pre">sa</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#capella_diff_tools.types.ObjectChange" title="capella_diff_tools.types.ObjectChange"><span class="pre">ObjectChange</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.ObjectChanges.sa" title="Link to this definition">¶</a></dt>
+<dd><p>Changes to objects from the SystemAnalysis layer.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capella_diff_tools.types.RevisionInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capella_diff_tools.types.</span></span><span class="sig-name descname"><span class="pre">RevisionInfo</span></span><a class="headerlink" href="#capella_diff_tools.types.RevisionInfo" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.RevisionInfo.author">
+<span class="sig-name descname"><span class="pre">author</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.RevisionInfo.author" title="Link to this definition">¶</a></dt>
+<dd><p>The author of the revision, in “Name &lt;<a class="reference external" href="mailto:email&#37;&#52;&#48;domain">email<span>&#64;</span>domain</a>&gt;” format.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.RevisionInfo.date">
+<span class="sig-name descname"><span class="pre">date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></em><a class="headerlink" href="#capella_diff_tools.types.RevisionInfo.date" title="Link to this definition">¶</a></dt>
+<dd><p>The time and date of the revision.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.RevisionInfo.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.RevisionInfo.description" title="Link to this definition">¶</a></dt>
+<dd><p>The description of the revision, i.e. the commit message.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.RevisionInfo.hash">
+<span class="sig-name descname"><span class="pre">hash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Required" title="(in Python v3.12)"><span class="pre">Required</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#capella_diff_tools.types.RevisionInfo.hash" title="Link to this definition">¶</a></dt>
+<dd><p>The revision hash.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capella_diff_tools.types.RevisionInfo.revision">
+<span class="sig-name descname"><span class="pre">revision</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#capella_diff_tools.types.RevisionInfo.revision" title="Link to this definition">¶</a></dt>
+<dd><p>The original revision passed to the diff tool.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-capella_diff_tools">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-capella_diff_tools" title="Link to this heading">¶</a></h2>
+<p>The capella_diff_tools package.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="modules.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">capella-diff-tools</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; DB InfraGO AG and the capella-diff-tools contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/DSD-DBS/capella-diff-tools" aria-label="GitHub"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHN0cm9rZT0iY3VycmVudENvbG9yIiBmaWxsPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMCIgdmlld0JveD0iMCAwIDE2IDE2Ij48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04IDBDMy41OCAwIDAgMy41OCAwIDhjMCAzLjU0IDIuMjkgNi41MyA1LjQ3IDcuNTkuNC4wNy41NS0uMTcuNTUtLjM4IDAtLjE5LS4wMS0uODItLjAxLTEuNDktMi4wMS4zNy0yLjUzLS40OS0yLjY5LS45NC0uMDktLjIzLS40OC0uOTQtLjgyLTEuMTMtLjI4LS4xNS0uNjgtLjUyLS4wMS0uNTMuNjMtLjAxIDEuMDguNTggMS4yMy44Mi43MiAxLjIxIDEuODcuODcgMi4zMy42Ni4wNy0uNTIuMjgtLjg3LjUxLTEuMDctMS43OC0uMi0zLjY0LS44OS0zLjY0LTMuOTUgMC0uODcuMzEtMS41OS44Mi0yLjE1LS4wOC0uMi0uMzYtMS4wMi4wOC0yLjEyIDAgMCAuNjctLjIxIDIuMi44Mi42NC0uMTggMS4zMi0uMjcgMi0uMjcuNjggMCAxLjM2LjA5IDIgLjI3IDEuNTMtMS4wNCAyLjItLjgyIDIuMi0uODIuNDQgMS4xLjE2IDEuOTIuMDggMi4xMi41MS41Ni44MiAxLjI3LjgyIDIuMTUgMCAzLjA3LTEuODcgMy43NS0zLjY1IDMuOTUuMjkuMjUuNTQuNzMuNTQgMS40OCAwIDEuMDctLjAxIDEuOTMtLjAxIDIuMiAwIC4yMS4xNS40Ni41NS4zOEE4LjAxMyA4LjAxMyAwIDAgMCAxNiA4YzAtNC40Mi0zLjU4LTgtOC04eiIvPjwvc3ZnPg=="/></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">capella_diff_tools package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-capella_diff_tools.compare">capella_diff_tools.compare module</a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.compare.compare_all_diagrams"><code class="docutils literal notranslate"><span class="pre">compare_all_diagrams()</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.compare.compare_all_objects"><code class="docutils literal notranslate"><span class="pre">compare_all_objects()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-capella_diff_tools.report">capella_diff_tools.report module</a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.report.generate_html"><code class="docutils literal notranslate"><span class="pre">generate_html()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-capella_diff_tools.types">capella_diff_tools.types module</a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.BaseObject"><code class="docutils literal notranslate"><span class="pre">BaseObject</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.BaseObject.display_name"><code class="docutils literal notranslate"><span class="pre">BaseObject.display_name</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.BaseObject.uuid"><code class="docutils literal notranslate"><span class="pre">BaseObject.uuid</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangeSummaryDocument"><code class="docutils literal notranslate"><span class="pre">ChangeSummaryDocument</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangeSummaryDocument.diagrams"><code class="docutils literal notranslate"><span class="pre">ChangeSummaryDocument.diagrams</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangeSummaryDocument.metadata"><code class="docutils literal notranslate"><span class="pre">ChangeSummaryDocument.metadata</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangeSummaryDocument.objects"><code class="docutils literal notranslate"><span class="pre">ChangeSummaryDocument.objects</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedAttribute"><code class="docutils literal notranslate"><span class="pre">ChangedAttribute</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedAttribute.current"><code class="docutils literal notranslate"><span class="pre">ChangedAttribute.current</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedAttribute.previous"><code class="docutils literal notranslate"><span class="pre">ChangedAttribute.previous</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedDiagram"><code class="docutils literal notranslate"><span class="pre">ChangedDiagram</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedDiagram.changed"><code class="docutils literal notranslate"><span class="pre">ChangedDiagram.changed</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedDiagram.display_name"><code class="docutils literal notranslate"><span class="pre">ChangedDiagram.display_name</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedDiagram.introduced"><code class="docutils literal notranslate"><span class="pre">ChangedDiagram.introduced</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedDiagram.layout_changes"><code class="docutils literal notranslate"><span class="pre">ChangedDiagram.layout_changes</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedDiagram.removed"><code class="docutils literal notranslate"><span class="pre">ChangedDiagram.removed</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedDiagram.uuid"><code class="docutils literal notranslate"><span class="pre">ChangedDiagram.uuid</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedObject"><code class="docutils literal notranslate"><span class="pre">ChangedObject</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedObject.attributes"><code class="docutils literal notranslate"><span class="pre">ChangedObject.attributes</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedObject.display_name"><code class="docutils literal notranslate"><span class="pre">ChangedObject.display_name</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ChangedObject.uuid"><code class="docutils literal notranslate"><span class="pre">ChangedObject.uuid</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.DiagramChange"><code class="docutils literal notranslate"><span class="pre">DiagramChange</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.DiagramChange.created"><code class="docutils literal notranslate"><span class="pre">DiagramChange.created</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.DiagramChange.deleted"><code class="docutils literal notranslate"><span class="pre">DiagramChange.deleted</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.DiagramChange.modified"><code class="docutils literal notranslate"><span class="pre">DiagramChange.modified</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.DiagramChanges"><code class="docutils literal notranslate"><span class="pre">DiagramChanges</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.DiagramChanges.epbs"><code class="docutils literal notranslate"><span class="pre">DiagramChanges.epbs</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.DiagramChanges.la"><code class="docutils literal notranslate"><span class="pre">DiagramChanges.la</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.DiagramChanges.oa"><code class="docutils literal notranslate"><span class="pre">DiagramChanges.oa</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.DiagramChanges.pa"><code class="docutils literal notranslate"><span class="pre">DiagramChanges.pa</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.DiagramChanges.sa"><code class="docutils literal notranslate"><span class="pre">DiagramChanges.sa</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.FullDiagram"><code class="docutils literal notranslate"><span class="pre">FullDiagram</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.FullDiagram.display_name"><code class="docutils literal notranslate"><span class="pre">FullDiagram.display_name</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.FullDiagram.uuid"><code class="docutils literal notranslate"><span class="pre">FullDiagram.uuid</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.FullObject"><code class="docutils literal notranslate"><span class="pre">FullObject</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.FullObject.attributes"><code class="docutils literal notranslate"><span class="pre">FullObject.attributes</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.FullObject.display_name"><code class="docutils literal notranslate"><span class="pre">FullObject.display_name</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.FullObject.uuid"><code class="docutils literal notranslate"><span class="pre">FullObject.uuid</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.Metadata"><code class="docutils literal notranslate"><span class="pre">Metadata</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.Metadata.model"><code class="docutils literal notranslate"><span class="pre">Metadata.model</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.Metadata.new_revision"><code class="docutils literal notranslate"><span class="pre">Metadata.new_revision</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.Metadata.old_revision"><code class="docutils literal notranslate"><span class="pre">Metadata.old_revision</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ObjectChange"><code class="docutils literal notranslate"><span class="pre">ObjectChange</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.ObjectChange.created"><code class="docutils literal notranslate"><span class="pre">ObjectChange.created</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ObjectChange.deleted"><code class="docutils literal notranslate"><span class="pre">ObjectChange.deleted</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ObjectChange.modified"><code class="docutils literal notranslate"><span class="pre">ObjectChange.modified</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ObjectChanges"><code class="docutils literal notranslate"><span class="pre">ObjectChanges</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.ObjectChanges.epbs"><code class="docutils literal notranslate"><span class="pre">ObjectChanges.epbs</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ObjectChanges.la"><code class="docutils literal notranslate"><span class="pre">ObjectChanges.la</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ObjectChanges.oa"><code class="docutils literal notranslate"><span class="pre">ObjectChanges.oa</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ObjectChanges.pa"><code class="docutils literal notranslate"><span class="pre">ObjectChanges.pa</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.ObjectChanges.sa"><code class="docutils literal notranslate"><span class="pre">ObjectChanges.sa</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capella_diff_tools.types.RevisionInfo"><code class="docutils literal notranslate"><span class="pre">RevisionInfo</span></code></a><ul>
+<li><a class="reference internal" href="#capella_diff_tools.types.RevisionInfo.author"><code class="docutils literal notranslate"><span class="pre">RevisionInfo.author</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.RevisionInfo.date"><code class="docutils literal notranslate"><span class="pre">RevisionInfo.date</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.RevisionInfo.description"><code class="docutils literal notranslate"><span class="pre">RevisionInfo.description</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.RevisionInfo.hash"><code class="docutils literal notranslate"><span class="pre">RevisionInfo.hash</span></code></a></li>
+<li><a class="reference internal" href="#capella_diff_tools.types.RevisionInfo.revision"><code class="docutils literal notranslate"><span class="pre">RevisionInfo.revision</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-capella_diff_tools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=04ba4d4d"></script>
+    </body>
+</html>
