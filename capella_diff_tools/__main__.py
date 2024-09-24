@@ -103,7 +103,7 @@ def _ensure_git(model: dict[str, t.Any]) -> None:
             path = path.parent
         model["path"] = "git+" + path.as_uri()
     elif proto != "git":
-        raise click.Abort("The 'model' must point to a git repository")
+        raise click.UsageError("The 'model' must point to a git repository")
 
     assert isinstance(model["path"], str)
 
