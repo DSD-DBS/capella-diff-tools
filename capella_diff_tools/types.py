@@ -126,11 +126,18 @@ class ObjectChange(te.TypedDict, total=False):
 
 
 class FullObject(BaseObject, te.TypedDict):
+    parent: str | None
+    """The UUID of the object's parent object.
+
+    None if the object does not have a parent.
+    """
     attributes: dict[str, t.Any]
     """All attributes that the object has (or had)."""
 
 
 class ChangedObject(BaseObject, te.TypedDict):
+    old_parent: str | None
+    new_parent: str | None
     attributes: dict[str, ChangedAttribute]
     """The attributes that were changed."""
 

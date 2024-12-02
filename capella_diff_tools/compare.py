@@ -202,6 +202,7 @@ def _obj2dict(obj: m.ModelElement) -> types.FullObject:
             attributes[attr] = _serialize_obj(val)
     return {
         "uuid": obj.uuid,
+        "parent": getattr(getattr(obj, "parent", None), "uuid", None),
         "display_name": _get_name(obj),
         "attributes": attributes,
     }
@@ -283,6 +284,8 @@ def _obj2diff(
         return None
     return {
         "uuid": old.uuid,
+        "old_parent": old.parent.uuid,
+        "new_parent": new.parent.uuid,
         "display_name": _get_name(new),
         "attributes": attributes,
     }
