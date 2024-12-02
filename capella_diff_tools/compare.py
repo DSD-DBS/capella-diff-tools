@@ -173,14 +173,20 @@ def _compare_object_type(
 
     if created_uuids := new_uuids - old_uuids:
         changes["created"] = [
-            _obj2dict(new._model.by_uuid(i)) for i in sorted(created_uuids)
+            _obj2dict(new._model.by_uuid(i))
+            for i in sorted(created_uuids)
+            if i
         ]
     if deleted_uuids := old_uuids - new_uuids:
         changes["deleted"] = [
-            _obj2dict(old._model.by_uuid(i)) for i in sorted(deleted_uuids)
+            _obj2dict(old._model.by_uuid(i))
+            for i in sorted(deleted_uuids)
+            if i
         ]
 
     for i in sorted(old_uuids & new_uuids):
+        if not i:
+            continue  # HACK
         if diff := _obj2diff(old._model.by_uuid(i), new._model.by_uuid(i)):
             changes.setdefault("modified", []).append(diff)
     return changes
@@ -208,7 +214,7 @@ def _obj2dict(obj: m.ModelElement) -> types.FullObject:
     }
 
 
-def _obj2diff(
+def _obj2diff(  # noqa: C901
     old: m.ModelElement, new: m.ModelElement
 ) -> types.ChangedObject | None:
     """Serialize the differences between the old and new object.
@@ -242,6 +248,20 @@ def _obj2diff(
                 old_val = None
             else:
                 raise
+        except KeyError as err:
+            if (
+                len(err.args) == 1
+                and isinstance(err.args[0], str)
+                and "#" in err.args[0]
+            ):
+                logger.warning(
+                    "Possibly broken link in old version of %s %r: %r",
+                    type(old).__name__,
+                    old.uuid,
+                    err.args[0],
+                )
+            else:
+                raise
         try:
             new_val = getattr(new, attr, None)
         except TypeError as err:
@@ -255,6 +275,20 @@ def _obj2diff(
                     new.uuid,
                 )
                 new_val = None
+            else:
+                raise
+        except KeyError as err:
+            if (
+                len(err.args) == 1
+                and isinstance(err.args[0], str)
+                and "#" in err.args[0]
+            ):
+                logger.warning(
+                    "Possibly broken link in new version of %s %r: %r",
+                    type(new).__name__,
+                    new.uuid,
+                    err.args[0],
+                )
             else:
                 raise
 

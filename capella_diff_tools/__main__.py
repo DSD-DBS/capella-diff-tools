@@ -16,6 +16,7 @@ import capellambse.model as m
 import click
 import markupsafe
 import yaml
+from capellambse import decl, helpers
 from capellambse import filehandler as fh
 
 import capella_diff_tools
@@ -55,6 +56,12 @@ _T = t.TypeVar("_T", bound=m.ModelElement)
     type=click.File("w", encoding="utf-8"),
     help="Generate a human-readable HTML report",
 )
+@click.option(
+    "-d",
+    "--output-decl",
+    type=click.File("w"),
+    help="Generate a declarative YAML that applies the changes",
+)
 def main(
     *,
     model: dict[str, t.Any],
@@ -63,6 +70,7 @@ def main(
     debug: bool,
     output_file: t.IO[str] | None,
     report_file: t.IO[str] | None,
+    output_decl: t.IO[str] | None,
 ) -> None:
     """Generate the diff summary between two model versions.
 
@@ -93,7 +101,7 @@ def main(
         "objects": objects,
     }
 
-    if output_file is report_file is None:
+    if output_file is report_file is output_decl is None:
         output_file = sys.stdout
 
     if output_file is not None:
@@ -102,6 +110,9 @@ def main(
     if report_file is not None:
         logger.info("Generating HTML report")
         report_file.write(report.generate_html(result))
+    if output_decl is not None:
+        logger.info("Generating declarative YAML")
+        output_decl.write(_generate_decl(old_model, new_model, result))
 
 
 def _ensure_git(model: dict[str, t.Any]) -> None:
@@ -173,6 +184,134 @@ def _get_commit_log(
             }
         )
     return commits
+
+
+def _generate_decl(
+    old_model: capellambse.MelodyModel,
+    new_model: capellambse.MelodyModel,
+    result: types.ChangeSummaryDocument,
+) -> str:
+    instructions: list[t.Any] = []
+
+    layer: types.ObjectLayer
+    for layer in result["objects"].values():  # type: ignore[assignment]
+        for objtype, changes in layer.items():
+            for obj in changes.get("created", ()):
+                assert helpers.is_uuid_string(obj["uuid"])
+                assert helpers.is_uuid_string(obj["parent"])
+                attr = _find_attr(
+                    new_model.by_uuid(obj["parent"]), obj["uuid"]
+                )
+                if attr is None:
+                    continue
+                instructions.append(
+                    {
+                        "parent": decl.UUIDReference(obj["parent"]),
+                        "extend": {
+                            attr: [{"_type": objtype, **obj["attributes"]}]
+                        },
+                    }
+                )
+            for obj in changes.get("deleted", ()):
+                assert helpers.is_uuid_string(obj["uuid"])
+                assert helpers.is_uuid_string(obj["parent"])
+                attr = _find_attr(
+                    old_model.by_uuid(obj["parent"]), obj["uuid"]
+                )
+                if attr is None:
+                    continue
+                instructions.append(
+                    {
+                        "parent": decl.UUIDReference(obj["parent"]),
+                        "delete": {attr: [decl.UUIDReference(obj["uuid"])]},
+                    }
+                )
+            for change in changes.get("modified", ()):
+                assert helpers.is_uuid_string(change["uuid"])
+                if change["old_parent"] != change["new_parent"]:
+                    assert helpers.is_uuid_string(change["new_parent"])
+                    attr = _find_attr(
+                        new_model.by_uuid(change["new_parent"]), change["uuid"]
+                    )
+                    if attr is not None:
+                        instructions.append(
+                            {
+                                "parent": decl.UUIDReference(
+                                    change["new_parent"]
+                                ),
+                                "extend": {
+                                    attr: [decl.UUIDReference(change["uuid"])]
+                                },
+                            }
+                        )
+
+                sets: t.Any = {}
+                for attr, update in change["attributes"].items():
+                    if isinstance(update["current"], list):
+                        sets[attr] = []
+                        for item in update["current"]:
+                            if isinstance(item, dict) and "uuid" in item:
+                                sets[attr].append(
+                                    decl.UUIDReference(item["uuid"])
+                                )
+                            else:
+                                raise NotImplementedError(
+                                    f"Invalid list item in {attr!r}: {item!r}"
+                                )
+                    else:
+                        sets[attr] = update["current"]
+                if sets:
+                    instructions.append(
+                        {
+                            "parent": decl.UUIDReference(change["uuid"]),
+                            "set": sets,
+                        }
+                    )
+
+    return decl.dump(
+        instructions,
+        metadata=old_model,
+        generator=f"capella-diff-tools v{capella_diff_tools.__version__}",
+    )
+
+
+def _find_attr(
+    parent: capellambse.model.ModelElement,
+    child: str,
+) -> str | None:
+    for attr in dir(type(parent)):
+        if attr.startswith("_"):
+            continue
+        try:
+            acc = getattr(type(parent), attr)
+        except AttributeError:
+            continue
+        if not isinstance(
+            acc,
+            (
+                capellambse.model.DirectProxyAccessor
+                | capellambse.model.Containment
+            ),
+        ):
+            continue
+        try:
+            check = acc.__get__(parent, type(parent))
+        except KeyError:
+            continue
+        if (
+            isinstance(check, capellambse.model.ModelElement)
+            and check.uuid == child
+        ) or (
+            isinstance(check, capellambse.model.ElementList)
+            and any(i.uuid == child for i in check)
+        ):
+            return attr
+    logger.warning(
+        "Did not find %s in %s (incomplete metamodel?)",
+        child,
+        parent._short_repr_(),
+    )
+    return None
 
 
 class CustomYAMLDumper(yaml.SafeDumper):
