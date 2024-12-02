@@ -33,6 +33,11 @@ _T = t.TypeVar("_T", bound=m.ModelElement)
     prog_name="Capella Diff Tools",
     message="%(prog)s %(version)s",
 )
+@click.option(
+    "--debug / --no-debug",
+    is_flag=True,
+    help="Enable DEBUG logging",
+)
 @click.argument("model", type=capellambse.ModelInfoCLI())
 @click.argument("old_version")
 @click.argument("new_version")
@@ -51,9 +56,11 @@ _T = t.TypeVar("_T", bound=m.ModelElement)
     help="Generate a human-readable HTML report",
 )
 def main(
+    *,
     model: dict[str, t.Any],
     old_version: str,
     new_version: str,
+    debug: bool,
     output_file: t.IO[str] | None,
     report_file: t.IO[str] | None,
 ) -> None:
@@ -62,12 +69,15 @@ def main(
     If neither '--output' nor '--report' are specified, the result is
     written in YAML format to stdout.
     """
-    logging.basicConfig(level="DEBUG")
+    logging.basicConfig(level=("INFO", "DEBUG")[debug])
     model.pop("revision", None)
     _ensure_git(model)
+    logger.info("Loading model at revision %s (old)", old_version)
     old_model = capellambse.MelodyModel(**model, revision=old_version)
+    logger.info("Loading model at revision %s (new)", new_version)
     new_model = capellambse.MelodyModel(**model, revision=new_version)
 
+    logger.info("Comparing models...")
     metadata: types.Metadata = {
         "model": model,
         "old_revision": _get_revision_info(old_model, old_version),
@@ -87,8 +97,10 @@ def main(
         output_file = sys.stdout
 
     if output_file is not None:
+        logger.info("Writing YAML report")
         yaml.dump(result, output_file, Dumper=CustomYAMLDumper)
     if report_file is not None:
+        logger.info("Generating HTML report")
         report_file.write(report.generate_html(result))
 
 
