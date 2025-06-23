@@ -131,7 +131,7 @@ def compare_all_objects(
         for obj_type in new_types & old_types:
             old_layerobjs = old_objects[layer][obj_type]
             new_layerobjs = new_objects[layer][obj_type]
-            logging.debug(
+            logger.debug(
                 "Comparing objects of type %s (%d -> %d)",
                 obj_type,
                 len(old_layerobjs),

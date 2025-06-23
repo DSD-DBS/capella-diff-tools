@@ -5,6 +5,7 @@
 
 # Capella Diff Tools
 
+![Build](https://github.com/DSD-DBS/capella-diff-tools/actions/workflows/build-test-publish.yml/badge.svg)
 [![Lint](https://github.com/DSD-DBS/capella-diff-tools/actions/workflows/lint.yml/badge.svg)](https://github.com/DSD-DBS/capella-diff-tools/actions/workflows/lint.yml)
 [![Apache 2.0 License](https://img.shields.io/github/license/dsd-dbs/capella-diff-tools)](LICENSES/Apache-2.0.txt)
 [![Code style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)

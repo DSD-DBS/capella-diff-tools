@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [build-system]
-requires = ["setuptools>=64", "setuptools_scm[toml]>=3.4", "wheel"]
+requires = ["setuptools>=77", "setuptools_scm[toml]>=3.4", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -12,14 +12,14 @@ name = "capella-diff-tools"
 description = "Tools for comparing different versions of a Capella model"
 readme = "README.md"
 requires-python = ">=3.11, <3.14"
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
+license-files = ["LICENSES/*.txt"]
 authors = [
   { name = "DB InfraGO AG" },
 ]
 keywords = []
 classifiers = [
   "Development Status :: 4 - Beta",
-  "License :: OSI Approved :: Apache Software License",
   "Natural Language :: English",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
@@ -73,10 +73,6 @@ skip_covered = true
 wrap-descriptions = 72
 wrap-summaries = 79
 
-[tool.isort]
-profile = 'black'
-line_length = 79
-
 [tool.mypy]
 check_untyped_defs = true
 disallow_incomplete_defs = true
@@ -128,6 +124,7 @@ extend-select = [
   "FIX",    # flake8-fixme
   "FURB",   # refurb
   "G",      # flake8-logging-format
+  "I",      # isort
   "ICN",    # flake8-import-conventions
   "ISC001", # "Implicitly concatenated string literals on one line"
   "ISC003", # "Explicitly concatenated string should be implicitly concatenated"
@@ -138,7 +135,7 @@ extend-select = [
   "RET",    # flake8-return
   "RUF",    # ruff
   "SIM",    # flake8-simplify
-  "TCH005", # "Found empty type-checking block"
+  "TC005",  # "Found empty type-checking block"
   "T1",     # flake8-debugger
   "UP",     # pyupgrade
   "YTT",    # flake8-2020
