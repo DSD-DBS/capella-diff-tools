@@ -1,0 +1,37 @@
+capella\_diff\_tools package
+============================
+
+Submodules
+----------
+
+capella\_diff\_tools.compare module
+-----------------------------------
+
+.. automodule:: capella_diff_tools.compare
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+capella\_diff\_tools.report module
+----------------------------------
+
+.. automodule:: capella_diff_tools.report
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+capella\_diff\_tools.types module
+---------------------------------
+
+.. automodule:: capella_diff_tools.types
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: capella_diff_tools
+   :members:
+   :show-inheritance:
+   :undoc-members:
