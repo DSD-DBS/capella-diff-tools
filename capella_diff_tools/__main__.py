@@ -41,14 +41,14 @@ _T = t.TypeVar("_T", bound=m.ModelElement)
     "-o",
     "--output",
     "output_file",
-    type=click.File("w"),
+    type=click.File("w", encoding="utf-8"),
     help="Write the diff report as YAML",
 )
 @click.option(
     "-r",
     "--report",
     "report_file",
-    type=click.File("w"),
+    type=click.File("w", encoding="utf-8"),
     help="Generate a human-readable HTML report",
 )
 def main(
