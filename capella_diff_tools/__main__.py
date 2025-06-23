@@ -64,8 +64,7 @@ def main(
     written in YAML format to stdout.
     """
     logging.basicConfig(level="DEBUG")
-    if "revision" in model:
-        del model["revision"]
+    model.pop("revision", None)
     model["path"] = _ensure_git(model["path"])
     old_model = capellambse.MelodyModel(**model, revision=old_version)
     new_model = capellambse.MelodyModel(**model, revision=new_version)
